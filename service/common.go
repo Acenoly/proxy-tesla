@@ -72,14 +72,13 @@ func isCountrySupport(country string) (flag bool) {
 
 func CreateOneGeo(country, types, session, username, password string) string {
 	session_int, _ := strconv.Atoi(session)
+    if country == "usf" {
+        country = "us"
+    }
+    if country == "eu" {
+        country = geoEu[session_int%len(geoEu)]
+    }
 	s := username + "+" + strings.ToUpper(country) + "+" + username + "-" + session + ":" + password + "@"
-	if country == "usf" {
-		country = "us"
-	}
-	if country == "eu" {
-		country = geoEu[session_int%len(geoEu)]
-	}
-
 	if strings.ToLower(types) == "sticky" {
 		if isCountrySupport(country) {
 			s += geo_sticky[country]
