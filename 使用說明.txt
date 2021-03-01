@@ -1,0 +1,4 @@
+GO 1.1以上
+go mod init tesla
+go mod tidy
+go buid
