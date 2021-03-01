@@ -50,6 +50,7 @@ var (
 		"cn":  "cn-1m.geosurf.io:8000",
 	}
 
+	geoEu = []string{"gb","de","it","cz","pl","nl","hu","se","es"}
 	lumiEu = []string{"UK", "AL", "AD", "AT", "BY", "BE", "BA", "BG", "HR", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "MC", "ME", "NL", "NO", "PL", "PT", "RO", "RS", "SK", "SI", "ES", "SE", "CH", "UA"}
 
 	oxyEuRotate = []string{"gb-pr.oxylabs.io:20000", "de-pr.oxylabs.io:30000", "fr-pr.oxylabs.io:40000", "es-pr.oxylabs.io:10000", "it-pr.oxylabs.io:20000", "se-pr.oxylabs.io:30000", "gr-pr.oxylabs.io:40000", "pt-pr.oxylabs.io:10000", "nl-pr.oxylabs.io:20000", "be-pr.oxylabs.io:30000", "ua-pr.oxylabs.io:10000", "pl-pr.oxylabs.io:20000", "dk-pr.oxylabs.io:19000", "al-pr.oxylabs.io:49000", "ad-pr.oxylabs.io:10000", "at-pr.oxylabs.io:11000", "ba-pr.oxylabs.io:13000", "bg-pr.oxylabs.io:14000", "by-pr.oxylabs.io:15000", "hr-pr.oxylabs.io:16000", "dk-pr.oxylabs.io:19000", "ee-pr.oxylabs.io:20000", "fi-pr.oxylabs.io:21000", "hu-pr.oxylabs.io:23000", "is-pr.oxylabs.io:24000", "ie-pr.oxylabs.io:25000", "lv-pr.oxylabs.io:26000", "li-pr.oxylabs.io:27000", "lt-pr.oxylabs.io:28000", "lu-pr.oxylabs.io:29000", "mt-pr.oxylabs.io:30000", "mc-pr.oxylabs.io:31000", "me-pr.oxylabs.io:33000", "no-pr.oxylabs.io:34000", "ro-pr.oxylabs.io:35000", "rs-pr.oxylabs.io:36000", "sk-pr.oxylabs.io:37000", "si-pr.oxylabs.io:38000", "ch-pr.oxylabs.io:39000"}
@@ -70,12 +71,13 @@ func isCountrySupport(country string) (flag bool) {
 }
 
 func CreateOneGeo(country, types, session, username, password string) string {
+	session_int, _ := strconv.Atoi(session)
 	s := username + "+" + strings.ToUpper(country) + "+" + username + "-" + session + ":" + password + "@"
 	if country == "usf" {
 		country = "us"
 	}
 	if country == "eu" {
-		country = "de"
+		country = geoEu[session_int%len(geoEu)]
 	}
 
 	if strings.ToLower(types) == "sticky" {

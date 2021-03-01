@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 	"tesla/config"
 	svc "tesla/service"
 	"tesla/utils"
+	"time"
 )
 
 type TrafficParam struct {
@@ -163,7 +165,15 @@ func AuthController(c *gin.Context) {
 			accounts_info := accounts_value[pick+1]
 			accounts_array := strings.Split(accounts_info, "-")
 			if accounts_array[0] == "lumi" {
-				t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+				rand.Seed(time.Now().UnixNano())
+				number := rand.Intn(10)
+				if number != 1{
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				} else{
+					t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+				}
 			}
 			if accounts_array[0] == "geo" {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
