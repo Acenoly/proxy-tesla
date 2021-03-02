@@ -140,7 +140,11 @@ func AuthController(c *gin.Context) {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				}else{
+				} else if country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				} else{
 					t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
 				}
 			}
@@ -151,7 +155,11 @@ func AuthController(c *gin.Context) {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				}else {
+				}else if country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				} else{
 					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
 				}
 			}
