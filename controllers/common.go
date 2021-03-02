@@ -133,37 +133,57 @@ func AuthController(c *gin.Context) {
 			if accounts_array[0] == "geo" {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
-			if accounts_array[0] == "oxy" {
-				rand.Seed(time.Now().UnixNano())
-				number := rand.Intn(1)
-				if number != 1{
-					accounts_info := accounts_value[1]
-					accounts_array := strings.Split(accounts_info, "-")
-					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				} else if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+			if accounts_array[0] == "lumi" {
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-					t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(5)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					}  else{
+						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+					}
+				}
+			}
+			if accounts_array[0] == "oxy" {
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(3)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					} else{
+						t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+					}
 				}
 			}
 			if accounts_array[0] == "smart" {
-				rand.Seed(time.Now().UnixNano())
-				number := rand.Intn(5)
-				if number != 1{
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				}else if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
-					accounts_info := accounts_value[1]
-					accounts_array := strings.Split(accounts_info, "-")
-					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				} else{
-					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(3)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					} else{
+						t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+					}
 				}
 			}
-
 		} else {
 			key = "SuperAccountInfo" + user_username
 			val, err := utils.GetRedisValueByPrefix(key)
@@ -188,28 +208,59 @@ func AuthController(c *gin.Context) {
 			pick := session_number % totalNumber
 			accounts_info := accounts_value[pick+1]
 			accounts_array := strings.Split(accounts_info, "-")
+			if accounts_array[0] == "geo" {
+				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+			}
 			if accounts_array[0] == "lumi" {
-				rand.Seed(time.Now().UnixNano())
-				number := rand.Intn(10)
-				if number != 1{
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-					t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(5)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					}  else{
+						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+					}
 				}
 			}
-			if accounts_array[0] == "geo" {
-				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-			}
-
 			if accounts_array[0] == "oxy" {
-				t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
-
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(3)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					} else{
+						t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+					}
+				}
 			}
-
 			if accounts_array[0] == "smart" {
-				t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(3)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					} else{
+						t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+					}
+				}
 			}
 		}
 		redis_key := user_username + session
