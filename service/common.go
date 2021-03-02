@@ -105,11 +105,13 @@ func CreateLumi(zone, session, country, username, password string) string {
 func CreateOneOxy(country, types, session, username, password string) (s string) {
 	session_int, _ := strconv.Atoi(session)
 	if strings.ToLower(types) == "sticky" {
-		if country == "eu" {
-			s = "user-" + username + "-country-" + oxyEuSticky[session_int%len(oxyEuSticky)] + "-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
+		if country != "us" {
+			s = "user-" + username + "-country-" + strings.ToUpper(country) + "-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
+		}else{
+			s = "user-" + username + "-country-US-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
 		}
 	} else {
-		if country == "eu" {
+		if country != "us" {
 			s = username + ":" + password + "@" + oxyEuRotate[session_int%len(oxyEuRotate)]
 		} else {
 			s = username + ":" + password + "@us-pr.oxylabs.io:10000"
@@ -121,13 +123,13 @@ func CreateOneOxy(country, types, session, username, password string) (s string)
 func CreateOneSmart(country, types, session, username, password string) (s string) {
 	session_int, _ := strconv.Atoi(session)
 	if strings.ToLower(types) == "sticky" {
-		if country == "eu" {
-			s = "user-" + username + "-country-" + smartEuSticky[session_int%len(smartEuSticky)] + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
+		if country != "us" {
+			s = "user-" + username + "-country-" + country + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
 		} else {
 			s = "user-" + username + "-country-" + "us" + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
 		}
 	} else {
-		if country == "eu" {
+		if country != "us" {
 			s = username + ":" + password + "@" + smartEuRotate[session_int%len(smartEuRotate)]
 		} else {
 			s = username + ":" + password + "@us.smartproxy.com:10000"
