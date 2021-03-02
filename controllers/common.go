@@ -134,10 +134,26 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "oxy" {
-				t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+				rand.Seed(time.Now().UnixNano())
+				number := rand.Intn(5)
+				if number != 1{
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+				}
 			}
 			if accounts_array[0] == "smart" {
-				t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+				rand.Seed(time.Now().UnixNano())
+				number := rand.Intn(5)
+				if number != 1{
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else {
+					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+				}
 			}
 
 		} else {
