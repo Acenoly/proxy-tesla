@@ -2,10 +2,12 @@ package service
 
 import (
 	"github.com/Shopify/sarama"
+	"math/rand"
 	"strconv"
 	"strings"
 	"tesla/config"
 	"tesla/utils"
+	"time"
 )
 
 var (
@@ -28,6 +30,25 @@ var (
 		"mo":  "ctr-2-30m.geosurf.io:8000",
 		"hk":  "hk-30m.geosurf.io:8000",
 		"cn":  "cn-30m.geosurf.io:8000",
+	}
+	geo_sticky_10      = map[string]string{
+		"usf": "us-10m.geosurf.io:8000",
+		"us":  "us-10m.geosurf.io:8000",
+		"au":  "au-10m.geosurf.io:8000",
+		"sg":  "ctr-2-10m.geosurf.io:8000",
+		"gb":  "gb-10m.geosurf.io:8000",
+		"de":  "de-10m.geosurf.io:8000",
+		"it":  "it-10m.geosurf.io:8000",
+		"es":  "es-10m.geosurf.io:8000",
+		"se":  "ctr-2-10m.geosurf.io:8000",
+		"hu":  "ctr-2-10m.geosurf.io:8000",
+		"dk":  "ctr-2-10m.geosurf.io:8000",
+		"cz":  "cz-10m.geosurf.io:8000",
+		"pl":  "pl-10m.geosurf.io:8000",
+		"nl":  "ctr-2-10m.geosurf.io:8000",
+		"mo":  "ctr-2-10m.geosurf.io:8000",
+		"hk":  "hk-10m.geosurf.io:8000",
+		"cn":  "cn-10m.geosurf.io:8000",
 	}
 
 	geo_rotate = map[string]string{
@@ -81,7 +102,13 @@ func CreateOneGeo(country, types, session, username, password string) string {
 	s := username + "+" + strings.ToUpper(country) + "+" + username + "-" + session + ":" + password + "@"
 	if strings.ToLower(types) == "sticky" {
 		if isCountrySupport(country) {
-			s += geo_sticky[country]
+			rand.Seed(time.Now().UnixNano())
+			number := rand.Intn(3)
+			if number == 1{
+				s += geo_sticky[country]
+			}else{
+				s += geo_sticky_10[country]
+			}
 		}
 	} else {
 		if isCountrySupport(country) {

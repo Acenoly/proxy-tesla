@@ -135,12 +135,12 @@ func AuthController(c *gin.Context) {
 			}
 			if accounts_array[0] == "oxy" {
 				rand.Seed(time.Now().UnixNano())
-				number := rand.Intn(5)
+				number := rand.Intn(1)
 				if number != 1{
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				} else if country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				} else if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -155,7 +155,7 @@ func AuthController(c *gin.Context) {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-				}else if country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				}else if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
