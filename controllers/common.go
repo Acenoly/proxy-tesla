@@ -35,10 +35,10 @@ func AuthController(c *gin.Context) {
 	user_username := infos[0]
 	//user_password := password
 	country := infos[1]
-	level := infos[2]
+	level := "basic"
 	session := infos[3]
 	itype := infos[4]
-	rate := infos[5]
+	rate := "0"
 
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
 
