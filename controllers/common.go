@@ -38,12 +38,12 @@ func AuthController(c *gin.Context) {
 	level := infos[2]
 	session := infos[3]
 	itype := infos[4]
-	rate := "0"
+	rate := infos[5]
 
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
 
 	key := ""
-	if level == "country" {
+	if level == "basic" {
 		key = "userBaseAuthOf" + user_username
 	} else if level == "super" {
 		key = "userSuperAuthOf" + user_username
@@ -134,7 +134,7 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "lumi" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -212,7 +212,7 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "lumi" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])

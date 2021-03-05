@@ -124,7 +124,7 @@ func CreateLumi(zone, session, country, username, password string) string {
 		session_int, _ := strconv.Atoi(session)
 		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + strings.ToLower(lumiEu[session_int%len(lumiEu)]) + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
 	} else {
-		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + "us" + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
+		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + country + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
 	}
 	return ip_country
 }
