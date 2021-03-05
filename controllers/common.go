@@ -35,7 +35,7 @@ func AuthController(c *gin.Context) {
 	user_username := infos[0]
 	//user_password := password
 	country := infos[1]
-	level := "basic"
+	level := infos[2]
 	session := infos[3]
 	itype := infos[4]
 	rate := "0"
@@ -43,7 +43,7 @@ func AuthController(c *gin.Context) {
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
 
 	key := ""
-	if level == "basic" {
+	if level == "country" {
 		key = "userBaseAuthOf" + user_username
 	} else if level == "super" {
 		key = "userSuperAuthOf" + user_username
