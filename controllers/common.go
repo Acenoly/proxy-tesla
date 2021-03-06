@@ -151,7 +151,7 @@ func AuthController(c *gin.Context) {
 				}
 			}
 			if accounts_array[0] == "oxy" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -168,7 +168,7 @@ func AuthController(c *gin.Context) {
 				}
 			}
 			if accounts_array[0] == "smart" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -221,7 +221,7 @@ func AuthController(c *gin.Context) {
 				}
 			}
 			if accounts_array[0] == "oxy" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -238,7 +238,7 @@ func AuthController(c *gin.Context) {
 				}
 			}
 			if accounts_array[0] == "smart" {
-				if itype == "Rotate" || country == "usf" || country == "au" || country == "sg" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
