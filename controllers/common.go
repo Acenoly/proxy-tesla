@@ -140,7 +140,6 @@ func AuthController(c *gin.Context) {
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
 						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
-					}
 				}
 			}
 			if accounts_array[0] == "oxy" {
@@ -204,7 +203,6 @@ func AuthController(c *gin.Context) {
 				} else{
 						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
 					}
-				}
 			}
 			if accounts_array[0] == "oxy" {
 				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
