@@ -139,13 +139,6 @@ func AuthController(c *gin.Context) {
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-					rand.Seed(time.Now().UnixNano())
-					number := rand.Intn(5)
-					if number != 1{
-						accounts_info := accounts_value[1]
-						accounts_array := strings.Split(accounts_info, "-")
-						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-					}  else{
 						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
 					}
 				}
@@ -209,13 +202,6 @@ func AuthController(c *gin.Context) {
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-					rand.Seed(time.Now().UnixNano())
-					number := rand.Intn(5)
-					if number != 1{
-						accounts_info := accounts_value[1]
-						accounts_array := strings.Split(accounts_info, "-")
-						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-					}  else{
 						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
 					}
 				}
