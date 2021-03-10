@@ -22,6 +22,61 @@ type TrafficParam struct {
 	Bytes      string `json:"bytes"`
 }
 
+func KickController(c *gin.Context){
+	user := c.PostForm("user")
+	//ip := c.PostForm("ips")
+	users := strings.Split(user, ",")
+	return_users_str := ""
+
+	for i, s := range users{
+		i=i+1
+		infos := strings.Split(s, "-")
+		user_username := infos[0]
+		//country := infos[1]
+		level := infos[2]
+		//session := infos[3]
+		//itype := infos[4]
+		//rate := infos[5]
+		if level == "country" {
+			key := "userBaseAuthOf" + user_username
+			value, err := utils.GetRedisValueByPrefix(key)
+			if err == redis.Nil {
+				utils.Log.WithField("key", key).Error("redis cache value is null")
+				continue
+			}
+			//redis get value success
+			res := strings.Split(value, ":")
+			//用多了
+			total, _ := strconv.ParseFloat(res[1], 8)
+			used, _ := strconv.ParseFloat(res[2], 8)
+			if used > total {
+				return_users_str += user + ","
+			}
+		} else if level == "super" {
+			key := "userSuperAuthOf" + user_username
+			value, err := utils.GetRedisValueByPrefix(key)
+			if err == redis.Nil {
+				utils.Log.WithField("key", key).Error("redis cache value is null")
+				continue
+			}
+			//redis get value success
+			res := strings.Split(value, ":")
+			//用多了
+			total, _ := strconv.ParseFloat(res[1], 8)
+			used, _ := strconv.ParseFloat(res[2], 8)
+			if used > total {
+				return_users_str += user + ","
+			}
+		}
+	}
+
+	sz := len(return_users_str)
+	c.JSON(http.StatusOK, gin.H{
+		"user": return_users_str[:sz-1],
+		"ip":"",
+	})
+}
+
 func AuthController(c *gin.Context) {
 	user := c.Query("user")
 	password := c.Query("pass")

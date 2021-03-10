@@ -14,8 +14,8 @@ func main() {
 	// The request responds to a url matching:  /welcome?firstname=Jane&lastname=Doe
 
 	router.GET("/api/auth", controllers.AuthController)
-
 	router.GET("/api/traffic", controllers.TrafficController)
+	router.POST("/api/kick", controllers.KickController)
 
 	router.Run(":" + config.AppConfig.AppPort)
 
