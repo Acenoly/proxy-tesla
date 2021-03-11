@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"math/rand"
@@ -87,11 +86,6 @@ func AuthController(c *gin.Context) {
 	target := c.Query("target")
 	//fmt.Println(user, password, client_addr, service, sps, target)
 	flag := utils.GetSneakerMap(target)
-	if flag{
-		fmt.Println("in")
-	}else{
-		fmt.Println("not in")
-	}
 	infos := strings.Split(user, "-")
 	user_username := infos[0]
 	//user_password := password
@@ -191,11 +185,11 @@ func AuthController(c *gin.Context) {
 			pick := session_number % totalNumber
 			accounts_info := accounts_value[pick+1]
 			accounts_array := strings.Split(accounts_info, "-")
-			if accounts_array[0] == "geo" {
+			if accounts_array[0] == "geo"{
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "lumi" {
-				if itype == "Rotate" || country == "usf" {
+				if itype == "Rotate" || country == "usf" || flag{
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -256,8 +250,8 @@ func AuthController(c *gin.Context) {
 			if accounts_array[0] == "geo" {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
-			if accounts_array[0] == "lumi" {
-				if itype == "Rotate" || country == "usf" {
+			if accounts_array[0] == "lumi"{
+				if itype == "Rotate" || country == "usf"  || flag{
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])

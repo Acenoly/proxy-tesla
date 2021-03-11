@@ -94,6 +94,7 @@ var (
 )
 
 func init() {
+	SNEAKERSMAP = make(map[string]int)
 	for i, s := range SNEAKERS {
 		i=1+i
 		SNEAKERSMAP[s] = 0
