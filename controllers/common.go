@@ -37,7 +37,7 @@ func KickController(c *gin.Context){
 		//session := infos[3]
 		//itype := infos[4]
 		//rate := infos[5]
-		if level == "country" {
+		if level == "basic" {
 			key := "userBaseAuthOf" + user_username
 			value, err := utils.GetRedisValueByPrefix(key)
 			if err == redis.Nil {
