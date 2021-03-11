@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"math/rand"
@@ -83,9 +84,14 @@ func AuthController(c *gin.Context) {
 	//client_addr := c.Query("client_addr")
 	//service := c.Query("service")
 	//sps := c.Query("sps")
-	//target := c.Query("target")
+	target := c.Query("target")
 	//fmt.Println(user, password, client_addr, service, sps, target)
-
+	flag := utils.GetSneakerMap(target)
+	if flag{
+		fmt.Println("in")
+	}else{
+		fmt.Println("not in")
+	}
 	infos := strings.Split(user, "-")
 	user_username := infos[0]
 	//user_password := password
