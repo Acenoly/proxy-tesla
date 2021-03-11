@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"math/rand"
@@ -72,10 +71,17 @@ func KickController(c *gin.Context){
 	}
 
 	sz := len(return_users_str)
-	c.JSON(http.StatusOK, gin.H{
-		"user": return_users_str[:sz-1],
-		"ip":"",
-	})
+	if sz > 0{
+		c.JSON(http.StatusOK, gin.H{
+			"user": return_users_str[:sz-1],
+			"ip":"",
+		})
+	}else{
+		c.JSON(http.StatusOK, gin.H{
+			"user": "",
+			"ip":"",
+		})
+	}
 }
 
 func AuthController(c *gin.Context) {
@@ -85,9 +91,6 @@ func AuthController(c *gin.Context) {
 	//service := c.Query("service")
 	//sps := c.Query("sps")
 	target := c.Query("target")
-	fmt.Println(target)
-	fmt.Println("jkduadmasd")
-
 	//fmt.Println(user, password, client_addr, service, sps, target)
 	flag := utils.GetSneakerMap(target)
 	infos := strings.Split(user, "-")
