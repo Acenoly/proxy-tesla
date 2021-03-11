@@ -85,8 +85,8 @@ func AuthController(c *gin.Context) {
 	//service := c.Query("server_addr")
 	//sps := c.Query("sps")
 	target := c.Query("target_addr")
-	fmt.Println(target)
-	fmt.Println("jkduadmasd")
+	fmt.Print(target)
+	fmt.Print("jkduadmasd")
 
 	//fmt.Println(user, password, client_addr, service, sps, target)
 	flag := utils.GetSneakerMap(target)
