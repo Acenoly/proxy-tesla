@@ -24,7 +24,7 @@ type TrafficParam struct {
 
 func KickController(c *gin.Context){
 	user := c.PostForm("user")
-	//ip := c.PostForm("ips")
+	//ip := c.PostForm("ip")
 	users := strings.Split(user, ",")
 	return_users_str := ""
 
