@@ -196,7 +196,7 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "lumi" {
-				if itype == "Rotate" || country == "usf" || flag{
+				if itype == "Rotate" || country == "usf" || !flag{
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
@@ -258,7 +258,7 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 			if accounts_array[0] == "lumi"{
-				if itype == "Rotate" || country == "usf"  || flag{
+				if itype == "Rotate" || country == "usf"  || !flag{
 					accounts_info := accounts_value[1]
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
