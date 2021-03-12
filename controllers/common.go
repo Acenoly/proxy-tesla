@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"math/rand"
@@ -22,66 +23,79 @@ type TrafficParam struct {
 	Bytes      string `json:"bytes"`
 }
 
-func KickController(c *gin.Context){
-	user := c.PostForm("user")
-	//ip := c.PostForm("ip")
-	users := strings.Split(user, ",")
-	return_users_str := ""
+type KickParam struct {
+	User string `json:"user"`
+	Ip string `json:"ip"`
+}
 
-	for i, s := range users{
-		i=i+1
-		infos := strings.Split(s, "-")
-		user_username := infos[0]
-		//country := infos[1]
-		level := infos[2]
-		//session := infos[3]
-		//itype := infos[4]
-		//rate := infos[5]
-		if level == "basic" {
-			key := "userBaseAuthOf" + user_username
-			value, err := utils.GetRedisValueByPrefix(key)
-			if err == redis.Nil {
-				utils.Log.WithField("key", key).Error("redis cache value is null")
-				continue
-			}
-			//redis get value success
-			res := strings.Split(value, ":")
-			//用多了
-			total, _ := strconv.ParseFloat(res[1], 8)
-			used, _ := strconv.ParseFloat(res[2], 8)
-			if used > total {
-				return_users_str += user + ","
-			}
-		} else if level == "super" {
-			key := "userSuperAuthOf" + user_username
-			value, err := utils.GetRedisValueByPrefix(key)
-			if err == redis.Nil {
-				utils.Log.WithField("key", key).Error("redis cache value is null")
-				continue
-			}
-			//redis get value success
-			res := strings.Split(value, ":")
-			//用多了
-			total, _ := strconv.ParseFloat(res[1], 8)
-			used, _ := strconv.ParseFloat(res[2], 8)
-			if used > total {
-				return_users_str += user + ","
+func KickController(c *gin.Context){
+	var info KickParam
+	err := c.BindJSON(&info)
+	if err != nil{
+		fmt.Println(err.Error())
+	}
+	if info.User != ""{
+		users := strings.Split(info.User, ",")
+		return_users_str := ""
+		for i := 0; i < len(users); i++ {
+			infos := strings.Split(users[i], "-")
+			user_username := infos[0]
+			//country := infos[1]
+			level := infos[2]
+			//session := infos[3]
+			//itype := infos[4]
+			//rate := infos[5]
+			if level == "basic" {
+				key := "userBaseAuthOf" + user_username
+				value, err := utils.GetRedisValueByPrefix(key)
+				if err == redis.Nil {
+					utils.Log.WithField("key", key).Error("redis cache value is null")
+					continue
+				}
+				//redis get value success
+				res := strings.Split(value, ":")
+				//用多了
+				total, _ := strconv.ParseFloat(res[1], 8)
+				used, _ := strconv.ParseFloat(res[2], 8)
+				if used > total {
+					return_users_str += info.User + ","
+				}
+			} else if level == "super" {
+				key := "userSuperAuthOf" + user_username
+				value, err := utils.GetRedisValueByPrefix(key)
+				if err == redis.Nil {
+					utils.Log.WithField("key", key).Error("redis cache value is null")
+					continue
+				}
+				//redis get value success
+				res := strings.Split(value, ":")
+				//用多了
+				total, _ := strconv.ParseFloat(res[1], 8)
+				used, _ := strconv.ParseFloat(res[2], 8)
+				if used > total {
+					return_users_str += info.User + ","
+				}
 			}
 		}
+		sz := len(return_users_str)
+		if sz > 0{
+			c.JSON(http.StatusOK, gin.H{
+				"user": return_users_str[:sz-1],
+				"ip":"",
+			})
+			return
+		}else{
+			c.JSON(http.StatusOK, gin.H{
+				"user": "",
+				"ip":"",
+			})
+			return
+		}
 	}
-
-	sz := len(return_users_str)
-	if sz > 0{
-		c.JSON(http.StatusOK, gin.H{
-			"user": return_users_str[:sz-1],
-			"ip":"",
-		})
-	}else{
-		c.JSON(http.StatusOK, gin.H{
-			"user": "",
-			"ip":"",
-		})
-	}
+	c.JSON(http.StatusOK, gin.H{
+		"user": "",
+		"ip":"",
+	})
 }
 
 func AuthController(c *gin.Context) {
