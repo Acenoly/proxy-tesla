@@ -24,13 +24,13 @@ type TrafficParam struct {
 }
 
 type KickParam struct {
-	User string `json:"user"`
-	Ip string `json:"ip"`
+	User string `form:"user" json:"user"`
+	Ip string `form:"ip" json:"ip"`
 }
 
 func KickController(c *gin.Context){
 	var info KickParam
-	err := c.BindJSON(&info)
+	err := c.Bind(&info)
 	if err != nil{
 		fmt.Println(err.Error())
 	}
@@ -58,7 +58,7 @@ func KickController(c *gin.Context){
 				total, _ := strconv.ParseFloat(res[1], 8)
 				used, _ := strconv.ParseFloat(res[2], 8)
 				if used > total {
-					return_users_str += info.User + ","
+					return_users_str += users[i] + ","
 				}
 			} else if level == "super" {
 				key := "userSuperAuthOf" + user_username
@@ -73,7 +73,7 @@ func KickController(c *gin.Context){
 				total, _ := strconv.ParseFloat(res[1], 8)
 				used, _ := strconv.ParseFloat(res[2], 8)
 				if used > total {
-					return_users_str += info.User + ","
+					return_users_str += users[i] + ","
 				}
 			}
 		}

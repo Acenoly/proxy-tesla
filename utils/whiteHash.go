@@ -1,6 +1,9 @@
 package utils
 
-import "net/url"
+import (
+	"net/url"
+	"strings"
+)
 
 var (
 	SNEAKERS = [282]string{"shoepalace.com", "finishline.com", "jdsports.com",
@@ -105,7 +108,8 @@ func GetSneakerMap(URL string) (flag bool){
 	if err != nil {
 		return false
 	}
-	_, ok := SNEAKERSMAP[u.Hostname()]
+	URLSTR := strings.Replace(u.Hostname(), "www.", "", 1)
+	_, ok := SNEAKERSMAP[URLSTR]
 	if ok {
 		return true
 	} else {
