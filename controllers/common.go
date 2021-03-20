@@ -314,7 +314,28 @@ func AuthController(c *gin.Context) {
 			return
 		}
 	} else {
-		t = val
+		if flag && strings.HasPrefix(val, "lum"){
+			if level == "basic" {
+				key = "BasicAccountInfo" + user_username
+			}else{
+				key = "SuperAccountInfo" + user_username
+			}
+			val, err := utils.GetRedisValueByPrefix(key)
+			if err == redis.Nil {
+				c.JSON(http.StatusCreated, "redis value is nil , key is "+key)
+				return
+			}
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, "redis server is not available")
+				return
+			}
+			accounts_value := strings.Split(val, ":")
+			accounts_info := accounts_value[1]
+			accounts_array := strings.Split(accounts_info, "-")
+			t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+		}else{
+			t = val
+		}
 	}
 
 	//t := ""
