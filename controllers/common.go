@@ -314,7 +314,7 @@ func AuthController(c *gin.Context) {
 			return
 		}
 	} else {
-		if flag && strings.HasPrefix(val, "lum"){
+		if !flag && strings.HasPrefix(val, "lum"){
 			if level == "basic" {
 				key = "BasicAccountInfo" + user_username
 			}else{
