@@ -75,6 +75,21 @@ func KickController(c *gin.Context){
 				if used > total {
 					return_users_str += users[i] + ","
 				}
+			}else if level == "light" {
+				key := "userLightAuthOf" + user_username
+				value, err := utils.GetRedisValueByPrefix(key)
+				if err == redis.Nil {
+					utils.Log.WithField("key", key).Error("redis cache value is null")
+					continue
+				}
+				//redis get value success
+				res := strings.Split(value, ":")
+				//用多了
+				total, _ := strconv.ParseFloat(res[1], 8)
+				used, _ := strconv.ParseFloat(res[2], 8)
+				if used > total {
+					return_users_str += users[i] + ","
+				}
 			}
 		}
 		sz := len(return_users_str)
@@ -123,6 +138,8 @@ func AuthController(c *gin.Context) {
 		key = "userBaseAuthOf" + user_username
 	} else if level == "super" {
 		key = "userSuperAuthOf" + user_username
+	} else if level == "light" {
+		key = "userLightAuthOf" + user_username
 	} else {
 		utils.Log.WithField("level", level).Error("level is not basic or super")
 		c.JSON(http.StatusCreated, "level is not basic or super")
@@ -244,7 +261,7 @@ func AuthController(c *gin.Context) {
 						t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
 				}
 			}
-		} else {
+		} else if level == "super" {
 			key = "SuperAccountInfo" + user_username
 			val, err := utils.GetRedisValueByPrefix(key)
 			if err == redis.Nil {
@@ -306,20 +323,8 @@ func AuthController(c *gin.Context) {
 					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
 				}
 			}
-		}
-		redis_key := user_username + session
-		err = utils.SetRedisValueByPrefix(redis_key, t, 0)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, "redis set value error key is "+redis_key+", value is "+t)
-			return
-		}
-	} else {
-		if !flag && strings.HasPrefix(val, "lum"){
-			if level == "basic" {
-				key = "BasicAccountInfo" + user_username
-			}else{
-				key = "SuperAccountInfo" + user_username
-			}
+		}else if level == "light" {
+			key = "LightAccountInfo" + user_username
 			val, err := utils.GetRedisValueByPrefix(key)
 			if err == redis.Nil {
 				c.JSON(http.StatusCreated, "redis value is nil , key is "+key)
@@ -330,69 +335,67 @@ func AuthController(c *gin.Context) {
 				return
 			}
 			accounts_value := strings.Split(val, ":")
-			accounts_info := accounts_value[1]
+			totalNumber, err := strconv.Atoi(accounts_value[0])
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, "accounts_value[0] can not parse to int, accounts_value[0] is"+accounts_value[0])
+				return
+			}
+			if totalNumber == 0 {
+				c.JSON(http.StatusCreated, "totalNumber is 0")
+				return
+			}
+			pick := session_number % totalNumber
+			accounts_info := accounts_value[pick+1]
 			accounts_array := strings.Split(accounts_info, "-")
-			t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
-		}else{
-			t = val
+			if accounts_array[0] == "geo" {
+				t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+			}
+			if accounts_array[0] == "lumi"{
+				if itype == "Rotate" || country == "usf"  || !flag{
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				} else{
+					t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+				}
+			}
+			if accounts_array[0] == "oxy" {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					rand.Seed(time.Now().UnixNano())
+					number := rand.Intn(3)
+					if number != 1{
+						accounts_info := accounts_value[1]
+						accounts_array := strings.Split(accounts_info, "-")
+						t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+					} else{
+						t = svc.CreateOneOxy(country, itype, session, accounts_array[1], accounts_array[2])
+					}
+				}
+			}
+			if accounts_array[0] == "smart" {
+				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
+					accounts_info := accounts_value[1]
+					accounts_array := strings.Split(accounts_info, "-")
+					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
+				}else{
+					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+				}
+			}
 		}
+		redis_key := user_username + session
+		err = utils.SetRedisValueByPrefix(redis_key, t, 0)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "redis set value error key is "+redis_key+", value is "+t)
+			return
+		}
+	} else {
+		t = val
 	}
 
-	//t := ""
-	//if level == "basic" {
-	//	key := "geoAccountNumber"
-	//	val, err := utils.GetRedisValueByPrefix(key)
-	//	//redis value is not found
-	//
-	//	//redis server error
-	//	if err != nil && err != redis.Nil {
-	//		c.JSON(http.StatusInternalServerError, "redis server is not available")
-	//		return
-	//	}
-	//
-	//	// value is nil
-	//	if err == redis.Nil {
-	//		t = svc.CreateOneGeo(country, itype, session, "abc", "123")
-	//	} else {
-	//		number, _ := strconv.Atoi(val)
-	//		pick := session_number % number
-	//		oxy_key := "geoAccount_" + strconv.Itoa(pick)
-	//		oxy_val, err := utils.GetRedisValueByPrefix(oxy_key)
-	//		if err != nil && err != redis.Nil {
-	//			c.JSON(http.StatusInternalServerError, "redis server is not available")
-	//			return
-	//		}
-	//		account_info := strings.Split(oxy_val, ":")
-	//		t = svc.CreateOneGeo(country, itype, session, account_info[0], account_info[1])
-	//	}
-	//} else {
-	//	key := "lumiAccountNumber"
-	//	val, err := utils.GetRedisValueByPrefix(key)
-	//	//redis value is not found
-	//
-	//	//redis server error
-	//	if err != nil && err != redis.Nil {
-	//		c.JSON(http.StatusInternalServerError, "redis server is not available")
-	//		return
-	//	}
-	//
-	//	// value is nil
-	//	if err == redis.Nil {
-	//		t = svc.CreateLumi(country, itype, session, "abc", "123")
-	//	} else {
-	//		number, _ := strconv.Atoi(val)
-	//		pick := session_number % number
-	//		oxy_key := "lumiAccount_" + strconv.Itoa(pick)
-	//		oxy_val, err := utils.GetRedisValueByPrefix(oxy_key)
-	//		if err != nil && err != redis.Nil {
-	//			c.JSON(http.StatusInternalServerError, "redis server is not available")
-	//			return
-	//		}
-	//		account_info := strings.Split(oxy_val, ":")
-	//		t = svc.CreateLumi(account_info[2], session, country, account_info[0], account_info[1])
-	//	}
-	//}
-	//
 	c.Header("userconns", config.AppConfig.UserConns)
 	c.Header("ipconns", config.AppConfig.IPConns)
 	c.Header("userrate", rate)
