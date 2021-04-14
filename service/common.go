@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	support_country = []string{"us", "usf", "au", "sg", "gb", "de", "it", "es", "se", "hu", "dk", "cz", "pl", "nl", "mo", "hk", "cn"}
+	support_country = []string{"ca", "us", "usf", "au", "sg", "gb", "de", "it", "es", "se", "hu", "dk", "cz", "pl", "nl", "mo", "hk", "cn"}
 	geo_sticky      = map[string]string{
 		"usf": "us-30m.geosurf.io:8000",
 		"us":  "us-30m.geosurf.io:8000",
@@ -30,6 +30,7 @@ var (
 		"mo":  "ctr-2-30m.geosurf.io:8000",
 		"hk":  "hk-30m.geosurf.io:8000",
 		"cn":  "cn-30m.geosurf.io:8000",
+		"ca":  "ca-30m.geosurf.io:8000",
 	}
 	geo_sticky_10      = map[string]string{
 		"usf": "us-10m.geosurf.io:8000",
@@ -49,6 +50,7 @@ var (
 		"mo":  "ctr-2-10m.geosurf.io:8000",
 		"hk":  "hk-10m.geosurf.io:8000",
 		"cn":  "cn-10m.geosurf.io:8000",
+		"ca":  "ca-10m.geosurf.io:8000",
 	}
 
 	geo_rotate = map[string]string{
