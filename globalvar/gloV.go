@@ -8,52 +8,43 @@ type RUNARRAY struct{
 }
 
 var COUNT int
-var USERARRAY = RUNARRAY{}
+var USERARRAY = &RUNARRAY{}
 
 func InitGlov(){
 	//清空加锁
-	USERARRAY.Lock()
-	USERARRAY = RUNARRAY{m: make(map[string]float64)}
-	USERARRAY.Unlock()
+	USERARRAY = &RUNARRAY{m: make(map[string]float64)}
 	COUNT = 0
 }
 
-func UpdateUSERARRAYVal(key string, used float64){
-	//读数据锁
-	USERARRAY.RLock()
-	if val, ok := USERARRAY.m[key]; ok{
-		//解了
-		USERARRAY.RUnlock()
-		//写数据锁
-		USERARRAY.Lock()
-		val += used
-		USERARRAY.Unlock()
-	}else{
-		//没有也解了
-		USERARRAY.RUnlock()
-		//写数据锁
-		USERARRAY.Lock()
-		USERARRAY.m[key] = used
-		USERARRAY.Unlock()
-	}
+func GETRUNARRAY() *RUNARRAY{
+	return USERARRAY
 }
 
-func CopyMap() map[string]float64{
-	targetMap  := make(map[string]float64)
-	USERARRAY.RLock()
-	for key, value := range USERARRAY.m {
-		targetMap[key] = value
-	}
-	USERARRAY.Lock()
-	USERARRAY.m = make(map[string]float64)
-
-	//全打开
-	USERARRAY.Unlock()
-	USERARRAY.RUnlock()
-
-	return targetMap
+func (b *RUNARRAY) GETRUNARRAYVALUE(key string)  float64{
+	b.RLock()
+	temp := b.m[key]
+	b.RUnlock()
+	return temp
 }
 
+func (b *RUNARRAY) Deposit(key string, used float64) {
+	b.Lock()
+	b.m[key] += used
+	b.Unlock()
+}
+
+func (b *RUNARRAY) Content() map[string]float64 {
+	b.Lock()
+	temp := b.m
+	b.m = make(map[string]float64)
+	b.Unlock()
+
+	return temp
+}
+
+func ClearCount(){
+	COUNT = 0
+}
 
 func AddCOUNT() int{
 	COUNT += 1

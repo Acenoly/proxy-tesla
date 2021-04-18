@@ -232,7 +232,7 @@ func AuthController(c *gin.Context) {
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+					t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
 				}
 			}
 			if accounts_array[0] == "oxy" {
@@ -258,7 +258,7 @@ func AuthController(c *gin.Context) {
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				}else{
-						t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
+					t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
 				}
 			}
 		} else if level == "super" {
@@ -294,8 +294,8 @@ func AuthController(c *gin.Context) {
 					accounts_array := strings.Split(accounts_info, "-")
 					t = svc.CreateOneGeo(country, itype, session, accounts_array[1], accounts_array[2])
 				} else{
-						t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
-					}
+					t = svc.CreateLumi(accounts_array[3], session, country, accounts_array[1], accounts_array[2])
+				}
 			}
 			if accounts_array[0] == "oxy" {
 				if itype == "Rotate" || country == "usf" || country == "mo" || country == "cn"  || country == "hk" || country == "cz"  {
@@ -429,22 +429,26 @@ func TrafficController(c *gin.Context) {
 		return
 	}
 	usage := 1.05 * byteUse / 10000000
-	globalvar.UpdateUSERARRAYVal(userkey, usage)
+	USERVALUE := globalvar.GETRUNARRAY()
+	USERVALUE.Deposit(userkey, usage)
+	fmt.Println(USERVALUE.GETRUNARRAYVALUE(userkey))
+	fmt.Println(globalvar.AddCOUNT())
 	//上传
-	if globalvar.AddCOUNT() > 1000 {
+	if globalvar.AddCOUNT() > 10 {
 		UploadToKafka()
 	}
 	c.JSON(http.StatusNoContent, "success")
 }
 
 func UploadToKafka(){
-	userArray := globalvar.CopyMap()
+	USERVALUE := globalvar.GETRUNARRAY()
+	userArray := USERVALUE.Content()
+	globalvar.ClearCount()
+
 	go func() {
 		message := ""
 		for key, value := range userArray {
-			rspon, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", value), 64)
-			rsponStr := strconv.FormatFloat(rspon, 'E', -1, 64) //float64
-			message += key + ":"+rsponStr + ","
+			message += key + ":"+ fmt.Sprintf("%.4f", value) + ","
 		}
 		//push to kafka
 		err := svc.PushTrafficParamToKafka(message)
