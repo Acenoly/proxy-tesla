@@ -38,7 +38,6 @@ func (b *RUNARRAY) Content() map[string]float64 {
 	temp := b.m
 	b.m = make(map[string]float64)
 	b.Unlock()
-
 	return temp
 }
 
