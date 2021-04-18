@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -10,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"tesla/config"
+	"tesla/globalvar"
 	svc "tesla/service"
 	"tesla/utils"
 	"time"
@@ -406,94 +406,51 @@ func AuthController(c *gin.Context) {
 }
 
 func TrafficController(c *gin.Context) {
-	//user := c.Query("username")
-	server_addr := c.Query("server_addr")
-	client_addr := c.Query("client_addr")
-	target_addr := c.Query("target_addr")
+	//server_addr := c.Query("server_addr")
+	//client_addr := c.Query("client_addr")
+	//target_addr := c.Query("target_addr")
 	username := c.Query("username")
 	bytes := c.Query("bytes")
 
-	//infos := strings.Split(user, "-")
-	//user_username := infos[0]
-	//country := infos[1]
-	//level := infos[2]
-	//session := infos[3]
-	//itype := infos[4]
-
-	//key := ""
-	//if level == "basic" {
-	//	key = "userBaseAuthOf" + user_username
-	//} else if level == "super" {
-	//	key = "userSuperAuthOf" + user_username
-	//} else {
-	//	c.JSON(http.StatusCreated, "level is not basic or super")
-	//	return
-	//}
-	//value, err := utils.GetRedisValueByPrefix(key)
-	//redis value is not found
-	//if err == redis.Nil {
-	//	c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
-	//	return
-	//}
-
-	//redis server error
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, "redis server is not available")
-	//	return
-	//}
-
-	//res := strings.Split(value, ":")
-	//byteUse, err := strconv.ParseFloat(bytes, 8)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, "byteUse cannot parse to float, byteUse is "+bytes)
-	//	return
-	//}
-	//if byteUse < 1000 {
-	//	byteUse = 1000
-	//}
-	//byteUse = math.Ceil(byteUse/1000) * 1000
-	//usage := float64(4) * byteUse / 1000 / 1000 / 10
-
-	//res2Float, err := strconv.ParseFloat(res[2], 8)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, "res[2] cannot parse to float, res[2] is "+res[2])
-	//	return
-	//}
-	//total := res2Float + usage
-	//rspon, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", total), 64)
-
-	//保存
-	//rsponStr := strconv.FormatFloat(rspon, 'E', -1, 64) //float64
-	//final := res[0] + ":" + res[1] + ":" + rsponStr
-	//err = utils.SetRedisValueByPrefix(key, final, 0)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, "redis set kv error key is "+key+" , value is "+final)
-	//	return
-	//}
-
-	params := TrafficParam{
-		Username:   username,
-		ServerAddr: server_addr,
-		ClientAddr: client_addr,
-		TargetAddr: target_addr,
-		Bytes:      bytes,
+	//这里是拿Key
+	infos := strings.Split(username, "-")
+	user_username := infos[0]
+	level := infos[2]
+	userkey := ""
+	if (level == "basic") {
+		userkey = "userBaseAuthOf" + user_username
+	} else {
+		userkey = "userSuperAuthOf" + user_username
 	}
-	paramByte, err := json.Marshal(&params)
+	//计算
+	byteUse, err := strconv.ParseFloat(bytes, 8)
 	if err != nil {
-		utils.Log.WithField("param", params).Error("TrafficParam struct marshal to json failed")
-		c.JSON(http.StatusInternalServerError, "TrafficParam struct marshal to json failed")
+		c.JSON(http.StatusInternalServerError, "res[2] cannot parse to float, res[2] is "+ bytes)
 		return
 	}
+	usage := 1.05 * byteUse / 10000000
+	globalvar.UpdateUSERARRAYVal(userkey, usage)
+	//上传
+	if globalvar.AddCOUNT() > 1000 {
+		UploadToKafka()
+	}
+	c.JSON(http.StatusNoContent, "success")
+}
 
+func UploadToKafka(){
+	userArray := globalvar.CopyMap()
 	go func() {
+		message := ""
+		for key, value := range userArray {
+			rspon, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", value), 64)
+			rsponStr := strconv.FormatFloat(rspon, 'E', -1, 64) //float64
+			message += key + ":"+rsponStr + ","
+		}
 		//push to kafka
-		err = svc.PushTrafficParamToKafka(string(paramByte))
+		err := svc.PushTrafficParamToKafka(message)
 		if err != nil {
 			utils.Log.WithField("err", err).Error("push to kafka err")
 			return
 		}
 	}()
-
-	c.JSON(http.StatusNoContent, "success")
-
 }
