@@ -180,7 +180,7 @@ func AuthController(c *gin.Context) {
 
 	// value is nil
 	if err == redis.Nil {
-		key =  port + "AccountInfo" + res[3]
+		key =  "AccountInfo" + res[3]
 		val, err := utils.GetRedisValueByPrefix(key)
 		if err == redis.Nil {
 			c.JSON(http.StatusCreated, "redis value is nil , key is "+key)
