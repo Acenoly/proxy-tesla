@@ -5,7 +5,9 @@ import (
 	"tesla/config"
 	"tesla/controllers"
 	"tesla/globalvar"
+	"tesla/utils"
 	_ "tesla/utils"
+	"github.com/robfig/cron"
 )
 
 func main() {
@@ -17,15 +19,15 @@ func main() {
 	//初始化
 	globalvar.InitGlov()
 
-	//c := cron.New()
-	//err := c.AddFunc("*/1 * * * * *", func() {
-	//	controllers.UploadToKafka()
-	//})
-	//if err != nil {
-	//	utils.Log.WithField("err", err).Error("start error")
-	//	return
-	//}
-	//c.Start()
+	c := cron.New()
+	err := c.AddFunc("*/1 * * * * *", func() {
+		controllers.UploadToKafka()
+	})
+	if err != nil {
+		utils.Log.WithField("err", err).Error("start error")
+		return
+	}
+	c.Start()
 
 	router.GET("/api/auth", controllers.AuthController)
 	router.GET("/api/traffic", controllers.TrafficController)

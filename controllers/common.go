@@ -282,7 +282,7 @@ func TrafficController(c *gin.Context) {
 	USERVALUE := globalvar.GETRUNARRAY()
 	USERVALUE.Deposit(userkey, byteUse)
 	//上传
-	if globalvar.AddCOUNT() > 1 {
+	if globalvar.AddCOUNT() > 1000 {
 		UploadToKafka()
 	}
 	c.JSON(http.StatusNoContent, "success")
