@@ -168,7 +168,7 @@ func AuthController(c *gin.Context) {
 
 	//优化版本
 	t := ""
-	key = "session*" + user_username + session
+	key = "session:" + user_username + session
 	val, err := utils.GetRedisValueByPrefix(key)
 	//redis value is not found
 
@@ -180,7 +180,7 @@ func AuthController(c *gin.Context) {
 
 	// value is nil
 	if err == redis.Nil {
-		key =  port + "AccountInfo" + res[3] + user_username
+		key =  port + "AccountInfo" + res[3]
 		val, err := utils.GetRedisValueByPrefix(key)
 		if err == redis.Nil {
 			c.JSON(http.StatusCreated, "redis value is nil , key is "+key)
@@ -241,7 +241,7 @@ func AuthController(c *gin.Context) {
 				t = svc.CreateOneSmart(country, itype, session, accounts_array[1], accounts_array[2])
 			}
 		}
-		redis_key := "session*" + user_username + session
+		redis_key := "session:" + user_username + session
 		err = utils.SetRedisValueByPrefix(redis_key, t, 0)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "redis set value error key is "+redis_key+", value is "+t)
