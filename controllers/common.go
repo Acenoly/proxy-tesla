@@ -197,9 +197,14 @@ func AuthController(c *gin.Context) {
 			return
 		}
 		if totalNumber == 0 {
-			c.JSON(http.StatusCreated, "totalNumber is 0")
-			return
+			c.Header("userconns", config.AppConfig.UserConns)
+			c.Header("ipconns", config.AppConfig.IPConns)
+			c.Header("userrate", rate)
+			c.Header("iprate", rate)
+			c.Header("upstream", "")
+			c.JSON(http.StatusNoContent, "success")
 		}
+
 		pick := session_number % totalNumber
 		accounts_info := accounts_value[pick+1]
 		accounts_array := strings.Split(accounts_info, "-")
@@ -255,7 +260,7 @@ func AuthController(c *gin.Context) {
 	c.Header("ipconns", config.AppConfig.IPConns)
 	c.Header("userrate", rate)
 	c.Header("iprate", rate)
-	c.Header("upstream", "http://"+t)
+	c.Header("upstream", t)
 	c.JSON(http.StatusNoContent, "success")
 
 }

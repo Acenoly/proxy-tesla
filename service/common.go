@@ -117,7 +117,7 @@ func CreateOneGeo(country, types, session, username, password string) string {
 			s += geo_rotate[country]
 		}
 	}
-	return s
+	return "http://" + s
 }
 
 func CreateLumi(zone, session, country, username, password string) string {
@@ -128,22 +128,22 @@ func CreateLumi(zone, session, country, username, password string) string {
 	} else {
 		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + country + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
 	}
-	return ip_country
+	return "http://" + ip_country
 }
 
 func CreateOneOxy(country, types, session, username, password string) (s string) {
 	session_int, _ := strconv.Atoi(session)
 	if strings.ToLower(types) == "sticky" {
 		if country != "us" {
-			s = "user-" + username + "-country-" + strings.ToUpper(country) + "-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
+			s = "http://"+"user-" + username + "-country-" + strings.ToUpper(country) + "-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
 		}else{
-			s = "user-" + username + "-country-US-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
+			s = "http://"+"user-" + username + "-country-US-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
 		}
 	} else {
 		if country != "us" {
-			s = username + ":" + password + "@" + oxyEuRotate[session_int%len(oxyEuRotate)]
+			s = "http://"+username + ":" + password + "@" + oxyEuRotate[session_int%len(oxyEuRotate)]
 		} else {
-			s = username + ":" + password + "@us-pr.oxylabs.io:10000"
+			s = "http://"+username + ":" + password + "@us-pr.oxylabs.io:10000"
 		}
 	}
 	return
@@ -153,15 +153,15 @@ func CreateOneSmart(country, types, session, username, password string) (s strin
 	session_int, _ := strconv.Atoi(session)
 	if strings.ToLower(types) == "sticky" {
 		if country != "us" {
-			s = "user-" + username + "-country-" + country + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
+			s = "http://"+"user-" + username + "-country-" + country + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
 		} else {
-			s = "user-" + username + "-country-" + "us" + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
+			s = "http://"+"user-" + username + "-country-" + "us" + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
 		}
 	} else {
 		if country != "us" {
-			s = username + ":" + password + "@" + smartEuRotate[session_int%len(smartEuRotate)]
+			s = "http://"+username + ":" + password + "@" + smartEuRotate[session_int%len(smartEuRotate)]
 		} else {
-			s = username + ":" + password + "@us.smartproxy.com:10000"
+			s = "http://"+username + ":" + password + "@us.smartproxy.com:10000"
 		}
 	}
 	return
