@@ -123,6 +123,7 @@ func AuthController(c *gin.Context) {
 		session = infos[6]
 		rate = "0"
 	}
+	fmt.Print("here5")
 
 	key := port + user_username
 	session_number, err := strconv.Atoi(session)
@@ -140,6 +141,7 @@ func AuthController(c *gin.Context) {
 		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
 		return
 	}
+	fmt.Print("here3")
 
 	//redis server error
 	if err != nil {
@@ -149,6 +151,8 @@ func AuthController(c *gin.Context) {
 
 	key = "userAuthOf" + user_username
 	value, err = utils.GetRedisValueByPrefix(key)
+	fmt.Print("here2")
+
 	//redis get value success
 	res := strings.Split(value, ":")
 	//密码不正确
@@ -171,6 +175,7 @@ func AuthController(c *gin.Context) {
 	key = "session:" + user_username + session
 	val, err := utils.GetRedisValueByPrefix(key)
 	//redis value is not found
+	fmt.Print("here1")
 
 	//redis server error
 	if err != nil && err != redis.Nil {
@@ -181,6 +186,7 @@ func AuthController(c *gin.Context) {
 	// value is nil
 	if err == redis.Nil {
 		key =  "AccountInfo" + res[3]
+		fmt.Print("here10")
 		val, err := utils.GetRedisValueByPrefix(key)
 		if err == redis.Nil {
 			c.JSON(http.StatusCreated, "redis value is nil , key is "+key)
@@ -247,7 +253,7 @@ func AuthController(c *gin.Context) {
 			}
 		}
 		redis_key := "session:" + user_username + session
-                fmt.Print("here")
+		fmt.Print("here")
 		err = utils.SetRedisValueByPrefix(redis_key, t, 0)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "redis set value error key is "+redis_key+", value is "+t)
