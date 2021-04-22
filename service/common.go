@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	support_country = []string{"ca", "us", "usf", "au", "sg", "gb", "de", "it", "es", "se", "hu", "dk", "cz", "pl", "nl", "mo", "hk", "cn"}
+	support_country = []string{"fr","tw", "my", "kr", "mx", "jp", "nz", "aupr", "ca", "us", "usf", "au", "sg", "gb", "de", "it", "es", "se", "hu", "dk", "cz", "pl", "nl", "mo", "hk", "cn"}
 	geo_sticky      = map[string]string{
 		"usf": "us-30m.geosurf.io:8000",
 		"us":  "us-30m.geosurf.io:8000",
@@ -98,6 +98,9 @@ func CreateOneGeo(country, types, session, username, password string) string {
     if country == "usf" {
         country = "us"
     }
+    if country == "aupr"{
+		country = "nz"
+	}
     if country == "eu" {
         country = geoEu[session_int%len(geoEu)]
     }
@@ -122,6 +125,9 @@ func CreateOneGeo(country, types, session, username, password string) string {
 
 func CreateLumi(zone, session, country, username, password string) string {
 	ip_country := ""
+	if country == "aupr"{
+		country = "nz"
+	}
 	if country == "eu" {
 		session_int, _ := strconv.Atoi(session)
 		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + strings.ToLower(lumiEu[session_int%len(lumiEu)]) + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
@@ -133,6 +139,9 @@ func CreateLumi(zone, session, country, username, password string) string {
 
 func CreateOneOxy(country, types, session, username, password string) (s string) {
 	session_int, _ := strconv.Atoi(session)
+	if country == "aupr"{
+		country = "nz"
+	}
 	if strings.ToLower(types) == "sticky" {
 		if country != "us" {
 			s = "http://"+"user-" + username + "-country-" + strings.ToUpper(country) + "-session-" + session + ":" + password + "@" + "pr.oxylabs.io:7777"
@@ -151,6 +160,9 @@ func CreateOneOxy(country, types, session, username, password string) (s string)
 
 func CreateOneSmart(country, types, session, username, password string) (s string) {
 	session_int, _ := strconv.Atoi(session)
+	if country == "aupr"{
+		country = "nz"
+	}
 	if strings.ToLower(types) == "sticky" {
 		if country != "us" {
 			s = "http://"+"user-" + username + "-country-" + country + "-session-" + session + ":" + password + "@" + "gate.smartproxy.com:7000"
