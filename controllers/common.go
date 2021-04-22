@@ -247,6 +247,7 @@ func AuthController(c *gin.Context) {
 			}
 		}
 		redis_key := "session:" + user_username + session
+                fmt.Print("here")
 		err = utils.SetRedisValueByPrefix(redis_key, t, 0)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "redis set value error key is "+redis_key+", value is "+t)
