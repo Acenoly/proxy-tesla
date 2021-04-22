@@ -14,6 +14,11 @@ type Config struct {
 	Topic     string
 	KafkaUrl  string
 	LogPath string
+
+	RedisWriteUrl  string
+	RedisWriteDB  int
+	RedisWritePrefix  string
+
 }
 
 var AppConfig = &Config{}
@@ -35,6 +40,13 @@ func init() {
 	redisDB, _ := cfg.Section("redis").Key("db").Int()
 	kafkaTopic := cfg.Section("kafka").Key("topic").String()
 	kafkaUrl := cfg.Section("kafka").Key("url").String()
+	redisWriteDB, _ := cfg.Section("rediswrite").Key("db").Int()
+	redisWritePrefix := cfg.Section("rediswrite").Key("prefix").String()
+	redisWriteUrl := cfg.Section("rediswrite").Key("url").String()
+
+	AppConfig.RedisWriteUrl  = redisWriteUrl
+	AppConfig.RedisWriteDB   = redisWriteDB
+	AppConfig.RedisWritePrefix = redisWritePrefix
 	AppConfig.AppPort = port
 	AppConfig.RedisUrl = redisUrl
 	AppConfig.UserConns = userConns
