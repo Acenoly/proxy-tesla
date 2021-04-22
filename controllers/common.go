@@ -159,9 +159,9 @@ func AuthController(c *gin.Context) {
 	}
 
 	//用多了
-	total, _ := strconv.ParseFloat(res[1], 8)
-	used, _ := strconv.ParseFloat(res[2], 8)
-	if used > total {
+	total, _ := strconv.ParseInt(res[1],10, 64)
+	used, _ := strconv.ParseInt(res[2],10, 64)	
+        if used > total {
 		c.JSON(http.StatusCreated, "current traffic is oversize")
 		return
 	}
