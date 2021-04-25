@@ -135,6 +135,7 @@ func CreateLumi(zone, session, country, username, password string) string {
 		ip_country = "lum-customer-" + username + "-zone-" + zone + "-country-" + country + "-session-" + session + ":" + password + "@zproxy.lum-superproxy.io:22225"
 	}
 	return "http://" + ip_country
+
 }
 
 func CreateOneOxy(country, types, session, username, password string) (s string) {
@@ -183,6 +184,17 @@ func PushTrafficParamToKafka(s string) error {
 	//utils.Log.Infof("kafka value is %s", s)
 	msg := &sarama.ProducerMessage{
 		Topic: config.AppConfig.Topic,
+		Value: sarama.StringEncoder(s),
+	}
+	//partition, offset, err := producer.SendMessage(msg)
+	_, _, err := utils.Producer.SendMessage(msg)
+	return err
+}
+
+func PushWebLogParamToKafka(s string) error {
+	//utils.Log.Infof("kafka value is %s", s)
+	msg := &sarama.ProducerMessage{
+		Topic: config.AppConfig.Topic2,
 		Value: sarama.StringEncoder(s),
 	}
 	//partition, offset, err := producer.SendMessage(msg)
