@@ -38,7 +38,7 @@ func KickController(c *gin.Context){
 		for i := 0; i < len(users); i++ {
 			infos := strings.Split(users[i], "-")
 			user_username := infos[0]
-			key := "ispAuthOf" + user_username
+			key := user_username
 			value, err := utils.GetRedisValueByPrefix(key)
 			if err == redis.Nil {
 				utils.Log.WithField("key", key).Error("redis cache value is null")
@@ -47,8 +47,8 @@ func KickController(c *gin.Context){
 			//redis get value success
 			res := strings.Split(value, ":")
 			//用多了
-			total, _ := strconv.ParseFloat(res[1], 8)
-			used, _ := strconv.ParseFloat(res[2], 8)
+			total, _ := strconv.ParseFloat(res[2], 8)
+			used, _ := strconv.ParseFloat(res[3], 8)
 			if used > total {
 				return_users_str += users[i] + ","
 			}
@@ -77,7 +77,7 @@ func KickController(c *gin.Context){
 func AuthController(c *gin.Context) {
 	user := c.Query("user")
 	password := c.Query("pass")
-	//client_addr := c.Query("client_addr")
+	client_addr := c.Query("client_addr")
 	local_addr := c.Query("local_addr")
 	//service := c.Query("service")
 	//sps := c.Query("sps")
@@ -85,12 +85,10 @@ func AuthController(c *gin.Context) {
 	//fmt.Println(user, password, client_addr, service, sps, target)
 	//flag := utils.GetSneakerMap(target)
 
-	local_addrs := strings.Split(local_addr, ":")
-	port := local_addrs[1]
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
 	//key拼接token
 
-	key := port + user
+	key := user
 
 	value, err := utils.GetRedisValueByPrefix(key)
 	//redis value is not found
@@ -99,15 +97,11 @@ func AuthController(c *gin.Context) {
 		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
 		return
 	}
-
 	//redis server error
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "redis server is not available")
 		return
 	}
-
-	key = "ispAuthOf" + user
-	value, err = utils.GetRedisValueByPrefix(key)
 
 	//redis get value success
 	res := strings.Split(value, ":")
@@ -118,19 +112,32 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
+	client_ip := strings.Split(client_addr, ":")[0]
+	//ip wrong
+	if client_ip != res[1]{
+		utils.Log.WithField("ip", res[0]).Error("ip is not right")
+		c.JSON(http.StatusCreated, "password is not right")
+		return
+	}
 
 	//用多了
-	total, _ := strconv.ParseInt(res[1],10, 64)
-	used, _ := strconv.ParseInt(res[2],10, 64)	
+	total, _ := strconv.ParseInt(res[2],10, 64)
+	used, _ := strconv.ParseInt(res[3],10, 64)
         if used > total {
 		c.JSON(http.StatusCreated, "current traffic is oversize")
 		return
 	}
 
 	//优化版本
-	t := ""
+	key = user+local_addr
+	value, err = utils.GetRedisValueByPrefix(key)
+	if err == redis.Nil {
+		utils.Log.WithField("local", key).Error("Not this provider")
+		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
+		return
+	}
 	//redis server error
-	if err != nil && err != redis.Nil {
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, "redis server is not available")
 		return
 	}
@@ -139,7 +146,7 @@ func AuthController(c *gin.Context) {
 	c.Header("ipconns", config.AppConfig.IPConns)
 	c.Header("userrate", "1000000")
 	c.Header("iprate", "1000000")
-	c.Header("upstream", t)
+	c.Header("upstream", value)
 	c.JSON(http.StatusNoContent, "success")
 }
 
@@ -150,24 +157,18 @@ func TrafficController(c *gin.Context) {
 	username := c.Query("username")
 	bytes := c.Query("bytes")
 
-	//这里是拿Key
-	infos := strings.Split(username, "-")
-	user_username := infos[0]
-	userkey := ""
-	userkey = "ispAuthOf" + user_username
-
 	//计算
 	byteUse, err := strconv.ParseInt(bytes,10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, "res[2] cannot parse to float, res[2] is "+ bytes)
+		c.JSON(http.StatusInternalServerError, "res[3] cannot parse to float, res[3] is "+ bytes)
 		return
 	}
 	USERVALUE := globalvar.GETRUNARRAY()
-	USERVALUE.Deposit(userkey, byteUse)
+	USERVALUE.Deposit(username, byteUse)
 
 	//记录请求网络
 	go func() {
-		message := user_username + "@"+ target_addr
+		message := username + "@"+ target_addr
 		//push to kafka
 		err := svc.PushWebLogParamToKafka(message)
 		if err != nil {
@@ -177,7 +178,7 @@ func TrafficController(c *gin.Context) {
 	}()
 
 	//上传
-	if globalvar.AddCOUNT() > 100 {
+	if globalvar.AddCOUNT() > 1000 {
 		UploadToKafka()
 	}
 	c.JSON(http.StatusNoContent, "success")
