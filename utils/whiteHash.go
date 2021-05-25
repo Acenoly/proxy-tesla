@@ -96,6 +96,9 @@ var (
 	SNEAKERSMAP map[string]int
 )
 
+
+
+
 func init() {
 	SNEAKERSMAP = make(map[string]int)
 	for _, s := range SNEAKERS {
@@ -109,6 +112,7 @@ func GetSneakerMap(URL string) (flag bool){
 		return false
 	}
 	URLSTR := strings.Replace(u.Hostname(), "www.", "", 1)
+	URLSTR = strings.ToLower(URLSTR)
 	_, ok := SNEAKERSMAP[URLSTR]
 	if ok {
 		return true

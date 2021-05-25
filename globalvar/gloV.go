@@ -7,13 +7,24 @@ type RUNARRAY struct{
 	m map[string]int64
 }
 
+
 var COUNT int
 var USERARRAY = &RUNARRAY{}
+var WebLock bool
 
 func InitGlov(){
 	//清空加锁
 	USERARRAY = &RUNARRAY{m: make(map[string]int64)}
 	COUNT = 0
+	WebLock = false
+}
+
+func GetWeblock() bool{
+	return WebLock
+}
+
+func SetWeblock(weblock bool){
+	WebLock = weblock
 }
 
 func GETRUNARRAY() *RUNARRAY{

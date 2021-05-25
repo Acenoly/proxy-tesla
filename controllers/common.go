@@ -81,15 +81,13 @@ func AuthController(c *gin.Context) {
 	local_addr := c.Query("local_addr")
 	//service := c.Query("service")
 	//sps := c.Query("sps")
-	//target := c.Query("target")
+	target := c.Query("target")
 	//fmt.Println(user, password, client_addr, service, sps, target)
-	//flag := utils.GetSneakerMap(target)
 
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
 	//key拼接token
 
 	key := user
-
 	value, err := utils.GetRedisValueByPrefix(key)
 	//redis value is not found
 	if err == redis.Nil {
@@ -142,6 +140,16 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
+	weblock := globalvar.GetWeblock()
+	if !weblock{
+		if  strings.Contains(strings.ToLower(target), "footlocker") ||
+			strings.Contains(strings.ToLower(target), "champssports") ||
+			strings.Contains(strings.ToLower(target), "footaction") ||
+			strings.Contains(strings.ToLower(target), "eastbay"){
+			value = ""
+		}
+	}
+
 	c.Header("userconns", config.AppConfig.UserConns)
 	c.Header("ipconns", config.AppConfig.IPConns)
 	c.Header("userrate", "1000000")
@@ -168,12 +176,15 @@ func TrafficController(c *gin.Context) {
 
 	//记录请求网络
 	go func() {
-		message := username + "@"+ target_addr
-		//push to kafka
-		err := svc.PushWebLogParamToKafka(message)
-		if err != nil {
-			utils.Log.WithField("err", err).Error("push to kafka err")
-			return
+		flag := utils.GetSneakerMap(target_addr)
+		if !flag{
+			message := username + "@"+ target_addr
+			//push to kafka
+			err := svc.PushWebLogParamToKafka(message)
+			if err != nil {
+				utils.Log.WithField("err", err).Error("push to kafka err")
+				return
+			}
 		}
 	}()
 
@@ -182,6 +193,26 @@ func TrafficController(c *gin.Context) {
 		UploadToKafka()
 	}
 	c.JSON(http.StatusNoContent, "success")
+}
+
+func UploadWebLock(){
+	value, err := utils.GetRedisValueByPrefix("lock")
+	//redis value is not found
+	if err == redis.Nil {
+		globalvar.SetWeblock(true)
+		return
+	}
+	//redis server error
+	if err != nil {
+		globalvar.SetWeblock(true)
+		return
+	}
+
+	if value == "pass"{
+		globalvar.SetWeblock(false)
+	}else {
+		globalvar.SetWeblock(true)
+	}
 }
 
 func UploadToKafka(){
