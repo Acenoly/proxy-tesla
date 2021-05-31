@@ -36,17 +36,15 @@ func SetSession(key string, value string){
 	Session[key] = value
 }
 
-func GetWeblock() int{
-	return WEBLOCK
+func GetWeblock() string{
+	if val, ok := Session["lock"]; ok {
+		return val
+	}
+	return "unpass"
 }
 
 func SetWeblock(lock string){
-	if lock == "pass"{
-		WEBLOCK = 0
-	}else{
-		WEBLOCK = 1
-
-	}
+	Session["lock"] = lock
 }
 
 func GETRUNARRAY() *RUNARRAY{

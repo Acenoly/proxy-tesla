@@ -35,7 +35,7 @@ func main() {
 		return
 	}
 	err = c.AddFunc("* */59 * * * *", func() {
-		controllers.UploadWebLock()
+		controllers.RemoveSession()
 	})
 	if err != nil {
 		utils.Log.WithField("err", err).Error("start error")

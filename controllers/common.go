@@ -147,7 +147,7 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
-	if globalvar.GetWeblock() == 1{
+	if globalvar.GetWeblock() == "unpass"{
 		if  strings.Contains(strings.ToLower(target), "footlocker") ||
 			strings.Contains(strings.ToLower(target), "champssports") ||
 			strings.Contains(strings.ToLower(target), "footaction") ||
@@ -203,17 +203,12 @@ func TrafficController(c *gin.Context) {
 
 func UploadWebLock(){
 	value, err := utils.GetRedisValueByPrefix("lock")
-	println(value)
 	//redis value is not found
 	if err == redis.Nil {
 		globalvar.SetWeblock("pass")
 		return
 	}
-	if value == "pass"{
-		globalvar.SetWeblock("pass")
-	}else {
-		globalvar.SetWeblock("unpass")
-	}
+	globalvar.SetWeblock(value)
 }
 
 func RemoveSession(){
