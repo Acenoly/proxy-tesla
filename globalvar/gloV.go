@@ -11,12 +11,25 @@ type RUNARRAY struct{
 var COUNT int
 var USERARRAY = &RUNARRAY{}
 var WebLock bool
+var Session map[string]string
 
 func InitGlov(){
 	//清空加锁
 	USERARRAY = &RUNARRAY{m: make(map[string]int64)}
 	COUNT = 0
 	WebLock = false
+	Session = map[string]string{}
+}
+
+func GetSession(key string) string{
+	if val, ok := Session[key]; ok {
+		return val
+	}
+	return "None"
+}
+
+func SetSession(key string, value string){
+	Session[key] = value
 }
 
 func GetWeblock() bool{

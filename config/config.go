@@ -20,6 +20,13 @@ type Config struct {
 	RedisWriteDB  int
 	RedisWritePrefix  string
 
+	RedisSessionWriteUrl  string
+	RedisSessionWriteDB  int
+	RedisSessionWritePrefix  string
+
+	RedisSessionUrl  string
+	RedisSessionDB  int
+	RedisSessionPrefix  string
 }
 
 var AppConfig = &Config{}
@@ -46,6 +53,14 @@ func init() {
 	redisWriteUrl := cfg.Section("rediswrite").Key("url").String()
 	topic2 := cfg.Section("kafka").Key("topic2").String()
 
+	redisSessionWriteDB, _ := cfg.Section("redisSessionWrite").Key("db").Int()
+	redisSessionWritePrefix := cfg.Section("redisSessionWrite").Key("prefix").String()
+	redisSessionWriteUrl := cfg.Section("redisSessionWrite").Key("url").String()
+
+	redisSessionDB, _ := cfg.Section("redisSession").Key("db").Int()
+	redisSessionPrefix := cfg.Section("redisSession").Key("prefix").String()
+	redisSessionUrl := cfg.Section("redisSession").Key("url").String()
+
 	AppConfig.RedisWriteUrl  = redisWriteUrl
 	AppConfig.RedisWriteDB   = redisWriteDB
 	AppConfig.RedisWritePrefix = redisWritePrefix
@@ -59,4 +74,12 @@ func init() {
 	AppConfig.KafkaUrl = kafkaUrl
 	AppConfig.LogPath = logPath
 	AppConfig.Topic2 = topic2
+
+	AppConfig.RedisSessionWriteUrl  =redisSessionWriteUrl
+	AppConfig.RedisSessionWriteDB  = redisSessionWriteDB
+	AppConfig.RedisSessionWritePrefix  = redisSessionWritePrefix
+
+	AppConfig.RedisSessionUrl  = redisSessionUrl
+	AppConfig.RedisSessionDB  = redisSessionDB
+	AppConfig.RedisSessionPrefix  = redisSessionPrefix
 }

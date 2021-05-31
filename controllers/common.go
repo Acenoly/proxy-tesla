@@ -128,7 +128,14 @@ func AuthController(c *gin.Context) {
 
 	//优化版本
 	key = user+local_addr
-	value, err = utils.GetRedisValueByPrefix(key)
+	v := globalvar.GetSession(key)
+	if v != "None"{
+		value = v
+	}else{
+		value, err = utils.GetRedisSession(key)
+		globalvar.SetSession(key, value)
+	}
+
 	if err == redis.Nil {
 		utils.Log.WithField("local", key).Error("Not this provider")
 		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
@@ -155,7 +162,7 @@ func AuthController(c *gin.Context) {
 	c.Header("userrate", "1000000")
 	c.Header("iprate", "1000000")
 	c.Header("upstream", value)
-	c.JSON(http.StatusNoContent, "success")
+	c.JSON(http.StatusNoContent, "")
 }
 
 func TrafficController(c *gin.Context) {
