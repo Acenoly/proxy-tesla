@@ -128,15 +128,8 @@ func AuthController(c *gin.Context) {
 
 	//优化版本
 	key = user+local_addr
-	CACHESESSION := globalvar.GETCACHESESSION()
 
-	v := CACHESESSION.GetSession(key)
-	if v != "None"{
-		value = v
-	}else{
-		value, err = utils.GetRedisValueByPrefix(key)
-		CACHESESSION.SetSession(key, value)
-	}
+	value, err = utils.GetRedisValueByPrefix(key)
 
 	if err == redis.Nil {
 		utils.Log.WithField("local", key).Error("Not this provider")
@@ -147,15 +140,6 @@ func AuthController(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "redis server is not available")
 		return
-	}
-
-	if CACHESESSION.GetWeblock() == "unpass"{
-		if  strings.Contains(strings.ToLower(target), "footlocker") ||
-			strings.Contains(strings.ToLower(target), "champssports") ||
-			strings.Contains(strings.ToLower(target), "footaction") ||
-			strings.Contains(strings.ToLower(target), "eastbay"){
-			value = ""
-		}
 	}
 
 	c.Header("userconns", config.AppConfig.UserConns)
