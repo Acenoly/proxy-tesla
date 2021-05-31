@@ -10,14 +10,14 @@ type RUNARRAY struct{
 
 var COUNT int
 var USERARRAY = &RUNARRAY{}
-var WebLock bool
+var WEBLOCK int
 var Session map[string]string
 
 func InitGlov(){
 	//清空加锁
 	USERARRAY = &RUNARRAY{m: make(map[string]int64)}
 	COUNT = 0
-	WebLock = false
+	WEBLOCK = 0
 	Session = map[string]string{}
 }
 
@@ -36,12 +36,17 @@ func SetSession(key string, value string){
 	Session[key] = value
 }
 
-func GetWeblock() bool{
-	return WebLock
+func GetWeblock() int{
+	return WEBLOCK
 }
 
-func SetWeblock(weblock bool){
-	WebLock = weblock
+func SetWeblock(lock string){
+	if lock == "pass"{
+		WEBLOCK = 0
+	}else{
+		WEBLOCK = 1
+
+	}
 }
 
 func GETRUNARRAY() *RUNARRAY{
