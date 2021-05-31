@@ -21,6 +21,10 @@ func InitGlov(){
 	Session = map[string]string{}
 }
 
+func RemoveSession(){
+	Session = make(map[string]string)
+}
+
 func GetSession(key string) string{
 	if val, ok := Session[key]; ok {
 		return val

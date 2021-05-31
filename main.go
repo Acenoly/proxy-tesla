@@ -34,7 +34,13 @@ func main() {
 		utils.Log.WithField("err", err).Error("start error")
 		return
 	}
-
+	err = c.AddFunc("* */59 * * * *", func() {
+		controllers.UploadWebLock()
+	})
+	if err != nil {
+		utils.Log.WithField("err", err).Error("start error")
+		return
+	}
 	c.Start()
 
 	router.GET("/api/auth", controllers.AuthController)

@@ -222,6 +222,10 @@ func UploadWebLock(){
 	}
 }
 
+func RemoveSession(){
+	globalvar.RemoveSession()
+}
+
 func UploadToKafka(){
 	USERVALUE := globalvar.GETRUNARRAY()
 	userArray := USERVALUE.Content()
