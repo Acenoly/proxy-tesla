@@ -147,8 +147,7 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
-	weblock := globalvar.GetWeblock()
-	if weblock == 1{
+	if globalvar.GetWeblock() == 1{
 		if  strings.Contains(strings.ToLower(target), "footlocker") ||
 			strings.Contains(strings.ToLower(target), "champssports") ||
 			strings.Contains(strings.ToLower(target), "footaction") ||
