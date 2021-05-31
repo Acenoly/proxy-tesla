@@ -7,44 +7,49 @@ type RUNARRAY struct{
 	m map[string]int64
 }
 
+type SESSION struct {
+	m map[string]string
+}
 
 var COUNT int
 var USERARRAY = &RUNARRAY{}
-var WEBLOCK int
-var Session map[string]string
+var CACHESESSION = &SESSION{}
 
 func InitGlov(){
 	//清空加锁
 	USERARRAY = &RUNARRAY{m: make(map[string]int64)}
 	COUNT = 0
-	WEBLOCK = 0
-	Session = map[string]string{}
+	CACHESESSION = &SESSION{m: make(map[string]string)}
 }
 
-func RemoveSession(){
-	Session = make(map[string]string)
+func GETCACHESESSION() *SESSION{
+	return CACHESESSION
 }
 
-func GetSession(key string) string{
-	if val, ok := Session[key]; ok {
+func (b *SESSION) RemoveSession(){
+	b.m = make(map[string]string)
+}
+
+func (b *SESSION) GetSession(key string) string{
+	if val, ok := b.m[key]; ok {
 		return val
 	}
 	return "None"
 }
 
-func SetSession(key string, value string){
-	Session[key] = value
+func (b *SESSION) SetSession(key string, value string){
+	b.m[key] = value
 }
 
-func GetWeblock() string{
-	if val, ok := Session["lock"]; ok {
+func (b *SESSION)  GetWeblock() string{
+	if val, ok := b.m["lock"]; ok {
 		return val
 	}
 	return "unpass"
 }
 
-func SetWeblock(lock string){
-	Session["lock"] = lock
+func (b *SESSION) SetWeblock(lock string){
+	b.m["lock"] = lock
 }
 
 func GETRUNARRAY() *RUNARRAY{

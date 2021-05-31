@@ -128,12 +128,14 @@ func AuthController(c *gin.Context) {
 
 	//优化版本
 	key = user+local_addr
-	v := globalvar.GetSession(key)
+	CACHESESSION := globalvar.GETCACHESESSION()
+
+	v := CACHESESSION.GetSession(key)
 	if v != "None"{
 		value = v
 	}else{
 		value, err = utils.GetRedisSession(key)
-		globalvar.SetSession(key, value)
+		CACHESESSION.SetSession(key, value)
 	}
 
 	if err == redis.Nil {
@@ -147,7 +149,7 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
-	if globalvar.GetWeblock() == "unpass"{
+	if CACHESESSION.GetWeblock() == "unpass"{
 		if  strings.Contains(strings.ToLower(target), "footlocker") ||
 			strings.Contains(strings.ToLower(target), "champssports") ||
 			strings.Contains(strings.ToLower(target), "footaction") ||
@@ -204,15 +206,17 @@ func TrafficController(c *gin.Context) {
 func UploadWebLock(){
 	value, err := utils.GetRedisValueByPrefix("lock")
 	//redis value is not found
+	CACHESESSION := globalvar.GETCACHESESSION()
 	if err == redis.Nil {
-		globalvar.SetWeblock("pass")
+		CACHESESSION.SetWeblock("pass")
 		return
 	}
-	globalvar.SetWeblock(value)
+	CACHESESSION.SetWeblock(value)
 }
 
 func RemoveSession(){
-	globalvar.RemoveSession()
+	CACHESESSION := globalvar.GETCACHESESSION()
+	CACHESESSION.RemoveSession()
 }
 
 func UploadToKafka(){
