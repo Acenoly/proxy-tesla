@@ -134,7 +134,7 @@ func AuthController(c *gin.Context) {
 	if v != "None"{
 		value = v
 	}else{
-		value, err = utils.GetRedisSession(key)
+		value, err = utils.GetRedisValueByPrefix(key)
 		CACHESESSION.SetSession(key, value)
 	}
 
