@@ -204,6 +204,7 @@ func TrafficController(c *gin.Context) {
 
 func UploadWebLock(){
 	value, err := utils.GetRedisValueByPrefix("lock")
+	println(value)
 	//redis value is not found
 	if err == redis.Nil {
 		globalvar.SetWeblock("pass")
