@@ -81,7 +81,7 @@ func AuthController(c *gin.Context) {
 	local_addr := c.Query("local_addr")
 	//service := c.Query("service")
 	//sps := c.Query("sps")
-	//target := c.Query("target")
+	target := c.Query("target")
 	//fmt.Println(user, password, client_addr, service, sps, target)
 
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
@@ -124,6 +124,24 @@ func AuthController(c *gin.Context) {
         if used > total {
 		c.JSON(http.StatusCreated, "current traffic is oversize")
 		return
+	}
+
+
+	GETCACHESESSION := globalvar.GETCACHESESSION()
+	lock := GETCACHESESSION.GetWeblock()
+	if lock == "unpass"{
+		if  strings.Contains(strings.ToLower(target), "footlocker") ||
+			strings.Contains(strings.ToLower(target), "champssports") ||
+			strings.Contains(strings.ToLower(target), "footaction") ||
+			strings.Contains(strings.ToLower(target), "eastbay"){
+			c.Header("userconns", config.AppConfig.UserConns)
+			c.Header("ipconns", config.AppConfig.IPConns)
+			c.Header("userrate", "1000000")
+			c.Header("iprate", "1000000")
+			c.Header("upstream", "")
+			c.JSON(http.StatusNoContent, "")
+			return
+		}
 	}
 
 	//优化版本
@@ -192,7 +210,11 @@ func UploadWebLock(){
 	//redis value is not found
 	CACHESESSION := globalvar.GETCACHESESSION()
 	if err == redis.Nil {
-		CACHESESSION.SetWeblock("pass")
+		CACHESESSION.SetWeblock("unpass")
+		return
+	}
+	if err != nil {
+		CACHESESSION.SetWeblock("unpass")
 		return
 	}
 	CACHESESSION.SetWeblock(value)
