@@ -81,7 +81,7 @@ func AuthController(c *gin.Context) {
 	local_addr := c.Query("local_addr")
 	//service := c.Query("service")
 	//sps := c.Query("sps")
-	target := c.Query("target")
+	//target := c.Query("target")
 	//fmt.Println(user, password, client_addr, service, sps, target)
 
 	//fmt.Println(user_username, user_password, country, level, session, itype, rate)
