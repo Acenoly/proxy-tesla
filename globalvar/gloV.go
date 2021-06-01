@@ -8,6 +8,7 @@ type RUNARRAY struct{
 }
 
 type SESSION struct {
+	sync.RWMutex
 	m map[string]string
 }
 
@@ -27,29 +28,41 @@ func GETCACHESESSION() *SESSION{
 }
 
 func (b *SESSION) RemoveSession(){
+	b.Lock()
 	b.m = make(map[string]string)
+	b.Unlock()
 }
 
 func (b *SESSION) GetSession(key string) string{
+	temp := "None"
+	b.RLock()
 	if val, ok := b.m[key]; ok {
-		return val
+		temp = val
 	}
-	return "None"
+	b.RUnlock()
+	return temp
 }
 
 func (b *SESSION) SetSession(key string, value string){
+	b.Lock()
 	b.m[key] = value
+	b.Unlock()
 }
 
 func (b *SESSION)  GetWeblock() string{
+	temp := "unpass"
+	b.RLock()
 	if val, ok := b.m["lock"]; ok {
-		return val
+		temp = val
 	}
-	return "unpass"
+	b.RUnlock()
+	return temp
 }
 
 func (b *SESSION) SetWeblock(lock string){
+	b.Lock()
 	b.m["lock"] = lock
+	b.Unlock()
 }
 
 func GETRUNARRAY() *RUNARRAY{

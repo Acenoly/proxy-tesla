@@ -211,17 +211,8 @@ func TrafficController(c *gin.Context) {
 }
 
 func UploadWebLock(){
-	value, err := utils.GetRedisValueByPrefix("lock")
-	//redis value is not found
+	value, _ := utils.GetRedisWriteValueByPrefix("lock")
 	CACHESESSION := globalvar.GETCACHESESSION()
-	if err == redis.Nil {
-		CACHESESSION.SetWeblock("unpass")
-		return
-	}
-	if err != nil {
-		CACHESESSION.SetWeblock("unpass")
-		return
-	}
 	CACHESESSION.SetWeblock(value)
 }
 

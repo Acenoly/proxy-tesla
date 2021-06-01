@@ -85,6 +85,12 @@ func GetRedisValueByPrefix(key string) (val string, err error) {
 	return
 }
 
+func GetRedisWriteValueByPrefix(key string) (val string, err error) {
+	ctx := context.Background()
+	val, err = RedisWriteClient.Get(ctx, config.AppConfig.KeyPrefix+key).Result()
+	return
+}
+
 func SetRedisValueByPrefix(key string, value string, t time.Duration) (err error) {
 	ctx := context.Background()
 	_, err = RedisWriteClient.Set(ctx, key, value, t).Result()
