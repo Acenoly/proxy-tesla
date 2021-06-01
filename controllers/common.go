@@ -147,12 +147,7 @@ func AuthController(c *gin.Context) {
 	//优化版本
 	port := strings.Split(local_addr, ":")[1]
 	key = user+port
-
-	value = GETCACHESESSION.GetSession(key)
-	if value == "None"{
-		value, err = utils.GetRedisValueByPrefix(key)
-		GETCACHESESSION.SetSession(key, value)
-	}
+	value, err = utils.GetRedisValueByPrefix(key)
 
 	if err == redis.Nil {
 		utils.Log.WithField("local", key).Error("Not this provider")
