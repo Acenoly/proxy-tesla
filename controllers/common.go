@@ -176,7 +176,7 @@ func AuthController(c *gin.Context) {
 func TrafficController(c *gin.Context) {
 	//server_addr := c.Query("server_addr")
 	//client_addr := c.Query("client_addr")
-	target_addr := c.Query("target_addr")
+	//target_addr := c.Query("target_addr")
 	username := c.Query("username")
 	bytes := c.Query("bytes")
 
@@ -190,20 +190,20 @@ func TrafficController(c *gin.Context) {
 	USERVALUE.Deposit(username, byteUse)
 
 	//记录请求网络
-	go func() {
-		flag := utils.GetSneakerMap(target_addr)
-		if !flag{
-			message := username + "@"+ target_addr
-			//push to kafka
-			err := svc.PushWebLogParamToKafka(message)
-			if err != nil {
-				utils.Log.WithField("err", err).Error("push to kafka err")
-				return
-			}
-		}
-	}()
-
+	//go func() {
+	//	flag := utils.GetSneakerMap(target_addr)
+	//	if !flag{
+	//		message := username + "@"+ target_addr
+	//		//push to kafka
+	//		err := svc.PushWebLogParamToKafka(message)
+	//		if err != nil {
+	//			utils.Log.WithField("err", err).Error("push to kafka err")
+	//			return
+	//		}
+	//	}
+	//}()
 	//上传
+
 	if globalvar.AddCOUNT() > 1000 {
 		UploadToKafka()
 	}
@@ -214,6 +214,16 @@ func UploadWebLock(){
 	value, _ := utils.GetRedisWriteValueByPrefix("lock")
 	CACHESESSION := globalvar.GETCACHESESSION()
 	CACHESESSION.SetWeblock(value)
+
+	iptable_value, _ := utils.GetRedisWriteValueByPrefix("iptable")
+	tables := strings.Split(iptable_value, ";")
+	for index, table := range tables{
+		if index == len(tables)-1{
+			break
+		}
+		keyAndTarget := strings.Split(table, "|")
+		CACHESESSION.SetSession(keyAndTarget[0], keyAndTarget[1])
+	}
 }
 
 func RemoveSession(){
