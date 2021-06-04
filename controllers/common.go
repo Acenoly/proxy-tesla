@@ -154,17 +154,6 @@ func AuthController(c *gin.Context) {
 		return
 	}
 
-	if err == redis.Nil {
-		utils.Log.WithField("local", key).Error("Not this provider")
-		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
-		return
-	}
-	//redis server error
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, "redis server is not available")
-		return
-	}
-
 	c.Header("userconns", config.AppConfig.UserConns)
 	c.Header("ipconns", config.AppConfig.IPConns)
 	c.Header("userrate", "1000000")
