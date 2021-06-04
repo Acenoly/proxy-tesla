@@ -150,8 +150,8 @@ func AuthController(c *gin.Context) {
 
 	value = GETCACHESESSION.GetSession(key)
 	if value == "None"{
-		value, err = utils.GetRedisValueByPrefix(key)
-		GETCACHESESSION.SetSession(key, value)
+		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
+		return
 	}
 
 	if err == redis.Nil {
