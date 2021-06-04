@@ -42,11 +42,10 @@ func main() {
 		return
 	}
 	c.Start()
-
+	controllers.UploadWebLock()
 	router.GET("/api/auth", controllers.AuthController)
 	router.GET("/api/traffic", controllers.TrafficController)
 	router.POST("/api/kick", controllers.KickController)
-
 	router.Run(":" + config.AppConfig.AppPort)
 
 }
