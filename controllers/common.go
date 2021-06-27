@@ -148,10 +148,13 @@ func AuthController(c *gin.Context) {
 	port := strings.Split(local_addr, ":")[1]
 	key = user+port
 
-	value = GETCACHESESSION.GetSession(key)
+	value = GETCACHESESSION.GetTempSession(key)
 	if value == "None"{
-		c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
-		return
+		value = GETCACHESESSION.GetSession(key)
+		if value == "None"{
+			c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
+			return
+		}
 	}
 
 	c.Header("userconns", config.AppConfig.UserConns)
@@ -212,6 +215,20 @@ func UploadWebLock(){
 		}
 		keyAndTarget := strings.Split(table, "|")
 		CACHESESSION.SetSession(keyAndTarget[0], keyAndTarget[1])
+	}
+
+	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
+	tables_temp := strings.Split(iptable_value_temp, ";")
+	for index, table := range tables_temp{
+		if index == len(tables)-1{
+			break
+		}
+		keyAndTarget := strings.Split(table, "|")
+		if keyAndTarget[1] == ""{
+			CACHESESSION.SetTempSession(keyAndTarget[0], "None")
+		}else {
+			CACHESESSION.SetTempSession(keyAndTarget[0], keyAndTarget[1])
+		}
 	}
 }
 
