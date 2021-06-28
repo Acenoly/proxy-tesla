@@ -133,6 +133,9 @@ func AuthController(c *gin.Context) {
 	key = user+port
 
 	value = GETCACHESESSION.GetSession(key)
+	if value == "None"{
+		value = ""
+	}
 
 	temp_value := GETCACHESESSION.GetTempSession(key)
 	if temp_value != "None"{
