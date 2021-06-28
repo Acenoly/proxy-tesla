@@ -10,6 +10,8 @@ type RUNARRAY struct{
 type SESSION struct {
 	sync.RWMutex
 	m map[string]string
+}
+type SESSIONTEMP struct {
 	mtemp map[string]string
 }
 
@@ -21,7 +23,7 @@ func InitGlov(){
 	//清空加锁
 	USERARRAY = &RUNARRAY{m: make(map[string]int64)}
 	COUNT = 0
-	CACHESESSION = &SESSION{m: make(map[string]string), mtemp: make(map[string]string)}
+	CACHESESSION = &SESSION{m: make(map[string]string)}
 }
 
 func GETCACHESESSION() *SESSION{
@@ -31,7 +33,6 @@ func GETCACHESESSION() *SESSION{
 func (b *SESSION) RemoveSession(){
 	b.Lock()
 	b.m = make(map[string]string)
-	b.mtemp = make(map[string]string)
 	b.Unlock()
 }
 
@@ -45,25 +46,9 @@ func (b *SESSION) GetSession(key string) string{
 	return temp
 }
 
-func (b *SESSION) GetTempSession(key string) string{
-	temp := "None"
-	b.RLock()
-	if val, ok := b.mtemp[key]; ok {
-		temp = val
-	}
-	b.RUnlock()
-	return temp
-}
-
 func (b *SESSION) SetSession(key string, value string){
 	b.Lock()
 	b.m[key] = value
-	b.Unlock()
-}
-
-func (b *SESSION) SetTempSession(key string, value string){
-	b.Lock()
-	b.mtemp[key] = value
 	b.Unlock()
 }
 

@@ -202,19 +202,19 @@ func UploadWebLock(){
 		CACHESESSION.SetSession(keyAndTarget[0], keyAndTarget[1])
 	}
 
-	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
-	tables_temp := strings.Split(iptable_value_temp, ";")
-	for index, table := range tables_temp{
-		if index == len(tables)-1{
-			break
-		}
-		keyAndTarget := strings.Split(table, "|")
-		if keyAndTarget[1] == ""{
-			CACHESESSION.SetTempSession(keyAndTarget[0], "None")
-		}else {
-			CACHESESSION.SetTempSession(keyAndTarget[0], keyAndTarget[1])
-		}
-	}
+	//iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
+	//tables_temp := strings.Split(iptable_value_temp, ";")
+	//for index, table := range tables_temp{
+	//	if index == len(tables)-1{
+	//		break
+	//	}
+	//	keyAndTarget := strings.Split(table, "|")
+	//	if keyAndTarget[1] == ""{
+	//		CACHESESSION.SetTempSession(keyAndTarget[0], "None")
+	//	}else {
+	//		CACHESESSION.SetTempSession(keyAndTarget[0], keyAndTarget[1])
+	//	}
+	//}
 }
 
 func RemoveSession(){
