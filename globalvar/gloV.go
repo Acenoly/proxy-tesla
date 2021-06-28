@@ -43,6 +43,12 @@ func (b *SESSION) RemoveSession(){
 	b.Unlock()
 }
 
+func (b *SESSIONTEMP) RemoveTempSession(){
+	b.Lock()
+	b.m = make(map[string]string)
+	b.Unlock()
+}
+
 func (b *SESSION) GetSession(key string) string{
 	temp := "None"
 	b.RLock()

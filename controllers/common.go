@@ -204,7 +204,6 @@ func UploadWebLock(){
 	}
 
 	CACHETEMPSESSION := globalvar.GETCACHETEMPSESSION()
-
 	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
 	if iptable_value_temp == ""{
 		return
@@ -226,6 +225,8 @@ func UploadWebLock(){
 func RemoveSession(){
 	CACHESESSION := globalvar.GETCACHESESSION()
 	CACHESESSION.RemoveSession()
+	CACHETEMPSESSION := globalvar.GETCACHETEMPSESSION()
+	CACHETEMPSESSION.RemoveTempSession()
 }
 
 func UploadToKafka(){
