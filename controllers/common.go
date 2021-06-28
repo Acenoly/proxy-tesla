@@ -137,7 +137,6 @@ func AuthController(c *gin.Context) {
 		value = ""
 	}
 
-
 	GETCACHTEMPESESSION := globalvar.GETCACHETEMPSESSION()
 	temp_value := GETCACHTEMPESESSION.GetTempSession(key)
 	if temp_value != "None"{
@@ -207,10 +206,10 @@ func UploadWebLock(){
 	CACHETEMPSESSION := globalvar.GETCACHETEMPSESSION()
 
 	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
-	tables_temp := strings.Split(iptable_value_temp, ";")
-	if len(tables_temp) == 1{
+	if iptable_value_temp == ""{
 		return
 	}
+	tables_temp := strings.Split(iptable_value_temp, ";")
 	for index, table := range tables_temp{
 		if index == len(tables)-1{
 			break
