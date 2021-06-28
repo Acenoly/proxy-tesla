@@ -137,10 +137,10 @@ func AuthController(c *gin.Context) {
 		value = ""
 	}
 
-	temp_value := GETCACHESESSION.GetTempSession(key)
-	if temp_value != "None"{
-		value = temp_value
-	}
+	//temp_value := GETCACHESESSION.GetTempSession(key)
+	//if temp_value != "None"{
+	//	value = temp_value
+	//}
 
 	c.Header("userconns", config.AppConfig.UserConns)
 	c.Header("ipconns", config.AppConfig.IPConns)
