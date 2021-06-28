@@ -132,13 +132,11 @@ func AuthController(c *gin.Context) {
 	port := strings.Split(local_addr, ":")[1]
 	key = user+port
 
-	value = GETCACHESESSION.GetTempSession(key)
-	if value == "None"{
-		value = GETCACHESESSION.GetSession(key)
-		if value == "None"{
-			c.JSON(http.StatusCreated, "redis cache value is null, redis key is  "+key)
-			return
-		}
+	value = GETCACHESESSION.GetSession(key)
+
+	temp_value := GETCACHESESSION.GetTempSession(key)
+	if temp_value != "None"{
+		value = temp_value
 	}
 
 	c.Header("userconns", config.AppConfig.UserConns)
