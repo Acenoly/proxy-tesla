@@ -137,10 +137,12 @@ func AuthController(c *gin.Context) {
 		value = ""
 	}
 
-	//temp_value := GETCACHESESSION.GetTempSession(key)
-	//if temp_value != "None"{
-	//	value = temp_value
-	//}
+
+	GETCACHTEMPESESSION := globalvar.GETCACHETEMPSESSION()
+	temp_value := GETCACHTEMPESESSION.GetTempSession(key)
+	if temp_value != "None"{
+		value = temp_value
+	}
 
 	c.Header("userconns", config.AppConfig.UserConns)
 	c.Header("ipconns", config.AppConfig.IPConns)
@@ -202,19 +204,24 @@ func UploadWebLock(){
 		CACHESESSION.SetSession(keyAndTarget[0], keyAndTarget[1])
 	}
 
-	//iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
-	//tables_temp := strings.Split(iptable_value_temp, ";")
-	//for index, table := range tables_temp{
-	//	if index == len(tables)-1{
-	//		break
-	//	}
-	//	keyAndTarget := strings.Split(table, "|")
-	//	if keyAndTarget[1] == ""{
-	//		CACHESESSION.SetTempSession(keyAndTarget[0], "None")
-	//	}else {
-	//		CACHESESSION.SetTempSession(keyAndTarget[0], keyAndTarget[1])
-	//	}
-	//}
+	CACHETEMPSESSION := globalvar.GETCACHETEMPSESSION()
+
+	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
+	tables_temp := strings.Split(iptable_value_temp, ";")
+	if len(tables_temp) == 1{
+		return
+	}
+	for index, table := range tables_temp{
+		if index == len(tables)-1{
+			break
+		}
+		keyAndTarget := strings.Split(table, "|")
+		if keyAndTarget[1] == ""{
+			CACHETEMPSESSION.SetTempSession(keyAndTarget[0], "None")
+		}else {
+			CACHETEMPSESSION.SetTempSession(keyAndTarget[0], keyAndTarget[1])
+		}
+	}
 }
 
 func RemoveSession(){
