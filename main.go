@@ -34,13 +34,6 @@ func main() {
 		utils.Log.WithField("err", err).Error("start error")
 		return
 	}
-	err = c.AddFunc("* */59 * * * *", func() {
-		controllers.RemoveSession()
-	})
-	if err != nil {
-		utils.Log.WithField("err", err).Error("start error")
-		return
-	}
 	c.Start()
 	controllers.UploadWebLock()
 	router.GET("/api/auth", controllers.AuthController)
