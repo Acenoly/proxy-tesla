@@ -135,12 +135,14 @@ func AuthController(c *gin.Context) {
 	value = GETCACHESESSION.GetSession(key)
 	if value == "None"{
 		value = ""
+		utils.Log.WithField("key", key).Error("GETCACHESESSION")
 	}
 
 	GETCACHTEMPESESSION := globalvar.GETCACHETEMPSESSION()
 	temp_value := GETCACHTEMPESESSION.GetTempSession(key)
 	if temp_value != "None"{
 		value = temp_value
+		utils.Log.WithField("key", key).Error("GETCACHTEMPESESSION")
 	}
 
 	c.Header("userconns", config.AppConfig.UserConns)
