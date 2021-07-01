@@ -34,7 +34,7 @@ func main() {
 		utils.Log.WithField("err", err).Error("start error")
 		return
 	}
-	err = c.AddFunc("0 */5 * * * *", func() {
+	err = c.AddFunc("0 2 * * * *", func() {
 		controllers.RemoveSession()
 		controllers.UploadWebLock()
 	})
