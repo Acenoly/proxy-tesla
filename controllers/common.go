@@ -209,6 +209,7 @@ func UploadWebLock(){
 	iptable_value_temp, _ := utils.GetRedisWriteValueByPrefix("iptabletemp")
 	if iptable_value_temp == ""{
 		CACHETEMPSESSION.RemoveTempSession()
+		return
 	}
 	tables_temp := strings.Split(iptable_value_temp, ";")
 	for index, table := range tables_temp{
