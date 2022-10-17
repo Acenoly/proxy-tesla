@@ -1,11 +1,11 @@
 # tesla 代理转发
 GO 1.1以上
 
--[] go mod init tesla
+- go mod init tesla
 
--[] go mod tidy
+- go mod tidy
 
--[] go buid
+- go buid
 
 Hellworld Proxy 特斯拉超级代理转发系统。
 
